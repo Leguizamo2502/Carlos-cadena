@@ -1,6 +1,8 @@
 package com.sena.crud_basic.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.*;
 
@@ -9,7 +11,7 @@ public class loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_loan", length = 10, nullable = false)
-    private Integer id_loan;
+    private int id_loan;
 
     @Column(name = "loan_date", nullable = false, length = 10)
     private LocalDate loan_date;
@@ -18,23 +20,35 @@ public class loan {
     private LocalDate return_date;
 
     @Column(name = "status", nullable = false, length = 20)
-    private String status; // status: ['returned', 'pending', 'late']
+    private String status; 
+
+    
+
+    @ManyToOne
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
+    private users users;
+
+    @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<loan_detail> loan_detail = new ArrayList<>();
 
     public loan() {
     }
 
-    public loan(Integer id_loan, LocalDate loan_date, LocalDate return_date, String status) {
+    public loan(int id_loan, LocalDate loan_date, LocalDate return_date, String status,
+            com.sena.crud_basic.model.users users, List<com.sena.crud_basic.model.loan_detail> loan_detail) {
         this.id_loan = id_loan;
         this.loan_date = loan_date;
         this.return_date = return_date;
         this.status = status;
+        this.users = users;
+        this.loan_detail = loan_detail;
     }
 
-    public Integer getId_loan() {
+    public int getId_loan() {
         return id_loan;
     }
 
-    public void setId_loan(Integer id_loan) {
+    public void setId_loan(int id_loan) {
         this.id_loan = id_loan;
     }
 
@@ -62,7 +76,22 @@ public class loan {
         this.status = status;
     }
 
-    // @ManyToOne
-    // @JoinColumn(name = "id_user", nullable = false)
-    // private user user;
+    public users getUsers() {
+        return users;
+    }
+
+    public void setUsers(users users) {
+        this.users = users;
+    }
+
+    public List<loan_detail> getLoan_detail() {
+        return loan_detail;
+    }
+
+    public void setLoan_detail(List<loan_detail> loan_detail) {
+        this.loan_detail = loan_detail;
+    }
+
+
+    
 }

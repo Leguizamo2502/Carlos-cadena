@@ -9,34 +9,12 @@ public class loan_detail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_loan_detail", length = 10, nullable = false)
-    private Integer id_loan_detail;
+    private int id_loan_detail;
 
     @Column(name = "quantity", nullable = false, length = 10)
-    private Integer quantity;
+    private int quantity;
 
-    public loan_detail() {
-    }
-
-    public loan_detail(Integer id_loan_detail, Integer quantity) {
-        this.id_loan_detail = id_loan_detail;
-        this.quantity = quantity;
-    }
-
-    public Integer getId_loan_detail() {
-        return id_loan_detail;
-    }
-
-    public void setId_loan_detail(Integer id_loan_detail) {
-        this.id_loan_detail = id_loan_detail;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
+    
 
     // @ManyToOne
     // @JoinColumn(name = "id_loan", nullable = false)
@@ -45,5 +23,46 @@ public class loan_detail {
     // @ManyToOne
     // @JoinColumn(name = "id_book", nullable = false)
     // private book book;
+    @ManyToOne
+    @JoinColumn(name = "id_loan", referencedColumnName = "id_loan")
+    private loan loan;
+    @ManyToOne
+    @JoinColumn(name = "id_book", referencedColumnName = "id_book")
+    private book book;
+    public loan_detail() {
+    }
+    public loan_detail(int id_loan_detail, int quantity, com.sena.crud_basic.model.loan loan,
+            com.sena.crud_basic.model.book book) {
+        this.id_loan_detail = id_loan_detail;
+        this.quantity = quantity;
+        this.loan = loan;
+        this.book = book;
+    }
+    public int getId_loan_detail() {
+        return id_loan_detail;
+    }
+    public void setId_loan_detail(int id_loan_detail) {
+        this.id_loan_detail = id_loan_detail;
+    }
+    public int getQuantity() {
+        return quantity;
+    }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+    public loan getLoan() {
+        return loan;
+    }
+    public void setLoan(loan loan) {
+        this.loan = loan;
+    }
+    public book getBook() {
+        return book;
+    }
+    public void setBook(book book) {
+        this.book = book;
+    }
+
+    
 
 }

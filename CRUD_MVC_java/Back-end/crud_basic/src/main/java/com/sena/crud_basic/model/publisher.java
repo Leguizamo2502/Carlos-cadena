@@ -1,5 +1,8 @@
 package com.sena.crud_basic.model;
 
+
+
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -9,36 +12,70 @@ public class publisher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_publisher", length = 10, nullable = false)
-    private Integer id_publisher;
+    private int id_publisher;
 
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
+    
+
+    // @OneToMany
+    // @JoinColumn(name = "id_publisher", referencedColumnName = "id_publisher")
+    // private book_publisher book_publisher;
+    @OneToMany(mappedBy = "publisher",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<book_publisher> book_publisher = new ArrayList<>();
+
+
+
     public publisher() {
     }
 
-    public Integer getId_publisher() {
+
+
+    public publisher(int id_publisher, String name, List<com.sena.crud_basic.model.book_publisher> book_publisher) {
+        this.id_publisher = id_publisher;
+        this.name = name;
+        this.book_publisher = book_publisher;
+    }
+
+
+
+    public int getId_publisher() {
         return id_publisher;
     }
 
-    public void setId_publisher(Integer id_publisher) {
+
+
+    public void setId_publisher(int id_publisher) {
         this.id_publisher = id_publisher;
     }
+
+
 
     public String getName() {
         return name;
     }
 
+
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public publisher(Integer id_publisher, String name) {
-        this.id_publisher = id_publisher;
-        this.name = name;
+
+
+    public List<book_publisher> getBook_publisher() {
+        return book_publisher;
     }
 
-    // // Relación Muchos a Muchos con Book (a través de la tabla intermedia book_publisher)
-    // @ManyToMany(mappedBy = "publishers")
-    // private List<book> books;
+
+
+    public void setBook_publisher(List<book_publisher> book_publisher) {
+        this.book_publisher = book_publisher;
+    }
+
+
+
+
+    
 }

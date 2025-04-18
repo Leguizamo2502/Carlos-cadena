@@ -2,6 +2,9 @@ package com.sena.crud_basic.model;
 
 
 
+
+
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -12,16 +15,62 @@ public class book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_book", length = 10, nullable = false)
-    private Integer id_book;
+    private int id_book;
+
+    
+
+    @Column(name = "title", nullable = false, length = 50)
+    private String title;
+
+    @Column(name = "description", nullable = false, length = 150)
+    private String description;
+
+
+    // @OneToMany
+    // @JoinColumn(name = "id_category", referencedColumnName = "id_category")
+    // private book_category book_category;
+    
+    // @OneToMany
+    // @JoinColumn(name = "id_author", referencedColumnName = "id_author")
+    // private book_author book_author;
+
+    // @OneToMany
+    // @JoinColumn(name = "id_publisher", referencedColumnName = "id_publisher")
+    // private book_publisher book_publisher;
+
+    @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<book_author> book_author = new ArrayList<>();
+
+    @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<book_category> book_category = new ArrayList<>();
+
+    @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<book_publisher> book_publisher = new ArrayList<>();
+
+    @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<loan_detail> loans = new ArrayList<>();
 
     public book() {
     }
 
-    public Integer getId_book() {
+    public book(int id_book, String title, String description,
+            List<com.sena.crud_basic.model.book_author> book_author,
+            List<com.sena.crud_basic.model.book_category> book_category,
+            List<com.sena.crud_basic.model.book_publisher> book_publisher, List<loan_detail> loans) {
+        this.id_book = id_book;
+        this.title = title;
+        this.description = description;
+        this.book_author = book_author;
+        this.book_category = book_category;
+        this.book_publisher = book_publisher;
+        this.loans = loans;
+    }
+
+    public int getId_book() {
         return id_book;
     }
 
-    public void setId_book(Integer id_book) {
+    public void setId_book(int id_book) {
         this.id_book = id_book;
     }
 
@@ -41,48 +90,37 @@ public class book {
         this.description = description;
     }
 
-    public book(Integer id_book, String title, String description) {
-        this.id_book = id_book;
-        this.title = title;
-        this.description = description;
+    public List<book_author> getBook_author() {
+        return book_author;
     }
 
-    @Column(name = "title", nullable = false, length = 50)
-    private String title;
+    public void setBook_author(List<book_author> book_author) {
+        this.book_author = book_author;
+    }
 
-    @Column(name = "description", nullable = false, length = 150)
-    private String description;
+    public List<book_category> getBook_category() {
+        return book_category;
+    }
 
+    public void setBook_category(List<book_category> book_category) {
+        this.book_category = book_category;
+    }
 
-    // // Relación Muchos a Muchos con Author (a través de la tabla intermedia Book_Author)
-    // @ManyToMany
-    // @JoinTable(
-    //     name = "book_author",
-    //     joinColumns = @JoinColumn(name = "id_book"),
-    //     inverseJoinColumns = @JoinColumn(name = "id_author")
-    // )
-    // private List<author> authors;
+    public List<book_publisher> getBook_publisher() {
+        return book_publisher;
+    }
 
-    // // Relación Muchos a Muchos con Category (a través de la tabla intermedia Book_Category)
-    // @ManyToMany
-    // @JoinTable(
-    //     name = "book_category",
-    //     joinColumns = @JoinColumn(name = "id_book"),
-    //     inverseJoinColumns = @JoinColumn(name = "id_category")
-    // )
-    // private List<category> categories;
+    public void setBook_publisher(List<book_publisher> book_publisher) {
+        this.book_publisher = book_publisher;
+    }
 
-    // // Relación Muchos a Muchos con Publisher (a través de la tabla intermedia Book_Publisher)
-    // @ManyToMany
-    // @JoinTable(
-    //     name = "book_publisher",
-    //     joinColumns = @JoinColumn(name = "id_book"),
-    //     inverseJoinColumns = @JoinColumn(name = "id_publisher")
-    // )
-    // private List<publisher> publishers;
+    public List<loan_detail> getLoans() {
+        return loans;
+    }
 
-    // // Relación Uno a Muchos con LoanDetail (para registrar préstamos de este libro)
-    // @OneToMany(mappedBy = "book")
-    // private List<loan_detail> loanDetails;
+    public void setLoans(List<loan_detail> loans) {
+        this.loans = loans;
+    }
+    
     
 }
