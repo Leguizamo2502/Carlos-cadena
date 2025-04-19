@@ -5,6 +5,8 @@ package com.sena.crud_basic.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity(name = "publisher")
@@ -23,6 +25,7 @@ public class publisher {
     // @JoinColumn(name = "id_publisher", referencedColumnName = "id_publisher")
     // private book_publisher book_publisher;
     @OneToMany(mappedBy = "publisher",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"publisher"})
     private List<book_publisher> book_publisher = new ArrayList<>();
 
 

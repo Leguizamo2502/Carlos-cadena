@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+.card-container{
+    display: flex;
+    gap: 15px;
+    flex-direction: row;
+}
+
+.custom-sidenav-list .mat-list-item .mat-line {
+  color: white !important;
+}
+
+.custom-sidenav-list .mat-list-item {
+  color: white !important;
+}
+.mdc-list-item__primary-text {
+  color: white !important;
+}

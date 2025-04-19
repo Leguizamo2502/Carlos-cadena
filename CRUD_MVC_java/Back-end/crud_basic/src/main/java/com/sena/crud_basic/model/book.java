@@ -7,6 +7,8 @@ package com.sena.crud_basic.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 
@@ -39,15 +41,19 @@ public class book {
     // private book_publisher book_publisher;
 
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"book"})
     private List<book_author> book_author = new ArrayList<>();
 
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"book"})
     private List<book_category> book_category = new ArrayList<>();
 
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"book"})
     private List<book_publisher> book_publisher = new ArrayList<>();
 
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"book"})
     private List<loan_detail> loans = new ArrayList<>();
 
     public book() {

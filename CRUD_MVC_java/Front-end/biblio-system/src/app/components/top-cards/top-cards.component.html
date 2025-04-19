@@ -1,0 +1,15 @@
+<mat-card class="info-card">
+    <div class="card-content">
+      <ng-container *ngIf="isImage; else materialIcon">
+        <img [src]="icon" alt="icono" class="icon-img" />
+      </ng-container>
+      <ng-template #materialIcon>
+        <mat-icon class="icon-mat">{{ icon }}</mat-icon>
+      </ng-template>
+      <div class="text-content">
+        <div class="title">{{ title }}</div>
+        <div class="value">{{ value }}</div>
+      </div>
+    </div>
+  </mat-card>
+  

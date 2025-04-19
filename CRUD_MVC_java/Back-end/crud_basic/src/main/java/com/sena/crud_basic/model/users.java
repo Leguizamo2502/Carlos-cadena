@@ -6,6 +6,8 @@ package com.sena.crud_basic.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity(name = "users")
@@ -28,6 +30,7 @@ public class users {
     private String email;
 
    @OneToMany(mappedBy  = "users", cascade = CascadeType.ALL, orphanRemoval = true)
+   @JsonIgnoreProperties({"users","loans"})
    private List<loan> loans = new ArrayList<>();
 
    public users() {

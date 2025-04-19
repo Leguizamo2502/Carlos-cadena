@@ -1,0 +1,38 @@
+<div class="card-container">
+    <app-top-cards *ngFor="let stat of stats" [title]="stat.title" [value]="stat.value" [icon]="stat.icon"
+        [isImage]="stat.isImage"></app-top-cards>
+</div>
+
+<!-- @for (author of author; track $index) {
+    <p>{{author.first_name}}</p>
+    <p>hola</p>
+  } -->
+<mat-table [dataSource]="book" class="mat-elevation-z8" style="width: 100%; margin-top: 16px;">
+
+    <!-- Título -->
+    <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef> Título </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.title }} </mat-cell>
+    </ng-container>
+
+    <!-- Autor -->
+    <ng-container matColumnDef="author">
+        <mat-header-cell *matHeaderCellDef> Autor </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.author?.first_name }} </mat-cell>
+    </ng-container>
+
+    <!-- Editorial -->
+    <ng-container matColumnDef="publisher">
+        <mat-header-cell *matHeaderCellDef> Editorial </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.publisher?.name }} </mat-cell>
+    </ng-container>
+
+    <!-- Categoría -->
+    <ng-container matColumnDef="category">
+        <mat-header-cell *matHeaderCellDef> Categoría </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.category?.name }} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

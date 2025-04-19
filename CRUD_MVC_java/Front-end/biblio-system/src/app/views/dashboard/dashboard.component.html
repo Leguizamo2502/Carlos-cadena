@@ -1,0 +1,18 @@
+<div class="card-container">
+    <app-top-cards
+      *ngFor="let stat of stats"
+      [title]="stat.title"
+      [value]="stat.value"
+      [icon]="stat.icon"
+      [isImage]="stat.isImage"
+    ></app-top-cards>
+  </div>
+<!-- @for (book of book; track $index) {
+    <p>{{book.title}}</p>
+} -->
+
+<!-- @for (user of user; track $index) {
+    <p>{{user.first_name}}</p>
+} -->
+
+  

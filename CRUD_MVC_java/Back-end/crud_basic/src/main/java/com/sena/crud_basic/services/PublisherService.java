@@ -35,7 +35,7 @@ public class PublisherService {
     }
 
     // Guardar
-    public responseDto savePublisher(requestRegisterPublisherDto publisherDto) {
+    public responseDto savePublisher(requestRegisterPublisherDto publisherDto) { 
         try {
             _pusblisherData.save(MapToEntity(publisherDto));
             return createResponse(HttpStatus.CREATED, "Publisher creado correctamente");
@@ -90,7 +90,7 @@ public class PublisherService {
     // Mapeo
     public publisher MapToEntity(requestRegisterPublisherDto publisherDto) {
         publisher publisher = new publisher();
-        publisher.setId_publisher(publisherDto.getId_publisher());
+        // publisher.setId_publisher(publisherDto.getId_publisher());
         publisher.setName(publisherDto.getName());
         return publisher;
     }

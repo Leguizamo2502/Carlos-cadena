@@ -1,5 +1,7 @@
 package com.sena.crud_basic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity(name = "book_author")
@@ -18,10 +20,12 @@ public class book_author {
 
     @ManyToOne
     @JoinColumn(name = "id_author", referencedColumnName = "id_author")
+    @JsonIgnoreProperties({"book_author"})
     private author author;
 
     @ManyToOne
     @JoinColumn(name = "id_book", referencedColumnName = "id_book")
+    @JsonIgnoreProperties({"book_author","description","book_category", "book_publisher", "loans" })
     private book book;
 
     public book_author() {

@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 
 @Entity(name = "loan")
@@ -26,9 +29,11 @@ public class loan {
 
     @ManyToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
+    @JsonIgnoreProperties({"loans"}) //aqui pa quitar cosas de user
     private users users;
 
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"loan"})
     private List<loan_detail> loan_detail = new ArrayList<>();
 
     public loan() {

@@ -7,6 +7,8 @@ package com.sena.crud_basic.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 
@@ -31,6 +33,7 @@ public class author {
     // @JoinColumn(name = "id_author", referencedColumnName = "id_author")
     // private book_author book_author;
     @OneToMany(mappedBy = "author",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"author"})
     private List<book_author> book_author = new ArrayList<>();
 
 
