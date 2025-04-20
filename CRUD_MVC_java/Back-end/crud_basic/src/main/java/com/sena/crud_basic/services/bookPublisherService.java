@@ -2,19 +2,21 @@ package com.sena.crud_basic.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.sena.crud_basic.DTO.requestRegisterBookPublisherDto;
-
+import com.sena.crud_basic.DTO.requestRegisterBookPublisherDto;
 import com.sena.crud_basic.DTO.responseDto;
 import com.sena.crud_basic.interfaces.IBook;
 import com.sena.crud_basic.interfaces.IBookPublisher;
 import com.sena.crud_basic.interfaces.IPusblisher;
 import com.sena.crud_basic.model.book_publisher;
 import com.sena.crud_basic.model.book;
+import com.sena.crud_basic.model.book_publisher;
 import com.sena.crud_basic.model.publisher;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -24,11 +26,6 @@ public class bookPublisherService {
     @Autowired
     private IBookPublisher _bookPublisherData;
 
-    @Autowired
-    private IBook _bookData;
-
-    @Autowired
-    private IPusblisher _publisherData;
 
     // Obteber todo
     public List<requestRegisterBookPublisherDto> findAllbookPublisher() {
@@ -42,7 +39,7 @@ public class bookPublisherService {
 
     // // Obtener por nombre
     // public List<bookPublisher> findByNamebookPublisher(String name) {
-    // return _bookPublisherData.findByName(name);
+    //     return _bookPublisherData.findByName(name);
     // }
 
     // Obteber por id
@@ -60,7 +57,7 @@ public class bookPublisherService {
             return MapToDto(bookPublisher.get());
 
         } catch (EntityNotFoundException e) {
-            // Excepción específica si no se encuentra
+            // Excepción específica si no se encuentra 
             throw e; // Aquí puedes decidir si quieres loguear la excepción o no
         } catch (Exception e) {
             // Cualquier otro error, como acceso a datos
@@ -70,10 +67,7 @@ public class bookPublisherService {
 
     // Guardar categoria
     public responseDto savebookPublisher(requestRegisterBookPublisherDto bookPublisherDto) {
-        // Validar que el id no exista
-        if (_bookPublisherData.findById(bookPublisherDto.getId_book_publisher()).isPresent()) {
-            return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
-        }
+        
         try {
             _bookPublisherData.save(MapToEntity(bookPublisherDto));
             return createResponse(HttpStatus.CREATED, "Se creo correctamenete");
@@ -105,6 +99,7 @@ public class bookPublisherService {
         }
     }
 
+
     public responseDto deletebookPublisher(int id) {
         try {
             var bookPublisher = _bookPublisherData.findById(id);
@@ -119,27 +114,29 @@ public class bookPublisherService {
         }
     }
 
-    // Mapeo de Dto a modelo
+    // Mapeo de Dto a modelo 
     public book_publisher MapToEntity(requestRegisterBookPublisherDto dto) {
-        book bookEntity = _bookData.findById(dto.getId_book())
-            .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+        book bookEntity = new book();
+        bookEntity.setId_book(dto.getId_book());
     
-        publisher publisherEntity = _publisherData.findById(dto.getId_publisher())
-            .orElseThrow(() -> new RuntimeException("Editorial no encontrada"));
+        publisher publisherEntity = new publisher();
+        publisherEntity.setId_publisher(dto.getId_publisher());
     
         return new book_publisher(
-            dto.getId_book_publisher(), // o 0 si estás creando
+            dto.getId_book_publisher(), // usa el ID recibido por si es actualización
             publisherEntity,
             bookEntity
         );
     }
+    
 
     // Mapeo de Entidad a Dto
     public requestRegisterBookPublisherDto MapToDto(book_publisher entity) {
         return new requestRegisterBookPublisherDto(
                 entity.getId_book_publisher(),
                 entity.getBook().getId_book(),
-                entity.getPublisher().getId_publisher());
+                entity.getPublisher().getId_publisher()
+        );
     }
 
     // Mapeao de entidad a lista de Dto
