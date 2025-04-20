@@ -33,40 +33,40 @@ public class publisherController {
     //Obtener todo
     @GetMapping("/")
     public ResponseEntity<Object> findAllPublisher(){
-        var ListPublisher = _publisherService.findAllPublisher();
+        var ListPublisher = _publisherService.findAllpublisher();
         return new ResponseEntity<Object>(ListPublisher,HttpStatus.OK);
     }
     //Obtener por nombre
     @GetMapping("/filter/{name}")
     public ResponseEntity<Object> findByNamePublisher(@PathVariable String name){
-        var ListPublisher = _publisherService.findByNamePublisher(name);
+        var ListPublisher = _publisherService.findByNamepublisher(name);
         return new ResponseEntity<Object>(ListPublisher,HttpStatus.OK);
     }
 
     //Obtener por id
     @GetMapping("/{id}")
     public ResponseEntity<Object> findByIdPublisher(@PathVariable int id){
-        var publisher = _publisherService.findByIdPublisher(id);
+        var publisher = _publisherService.findpublisherById(id);
         return new ResponseEntity<>(publisher,HttpStatus.OK);
     }
 
     //Guardar
     @PostMapping("/")
     public ResponseEntity<responseDto> savePublisher(@RequestBody requestRegisterPublisherDto publisherDto) {
-       responseDto response = _publisherService.savePublisher(publisherDto);
+       responseDto response = _publisherService.savepublisher(publisherDto);
         return new ResponseEntity<>(response,response.getStatus());
     }
 
     //Actualizar
     @PutMapping("/")
     public ResponseEntity<responseDto> updatePublisher(@RequestBody requestRegisterPublisherDto publisher) {
-        responseDto response = _publisherService.updatePublisher(publisher);
+        responseDto response = _publisherService.updatepublisher(publisher);
         return new ResponseEntity<>(response,response.getStatus());
     }
     //Borrar
     @DeleteMapping("/{id}")
     public ResponseEntity<responseDto> deletePublisher(@PathVariable int id) {
-       responseDto response =  _publisherService.deletePublisher(id);
+       responseDto response =  _publisherService.deletepublisher(id);
         return new ResponseEntity<>(response,response.getStatus());
     }
 }

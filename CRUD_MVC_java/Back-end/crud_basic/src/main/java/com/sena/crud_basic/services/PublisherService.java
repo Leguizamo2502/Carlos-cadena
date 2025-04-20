@@ -1,5 +1,6 @@
 package com.sena.crud_basic.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,95 +9,136 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.sena.crud_basic.DTO.requestRegisterPublisherDto;
+import com.sena.crud_basic.DTO.requestRegisterPublisherDto;
 import com.sena.crud_basic.DTO.responseDto;
 import com.sena.crud_basic.interfaces.IPusblisher;
 import com.sena.crud_basic.model.publisher;
+import com.sena.crud_basic.model.publisher;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PublisherService {
     @Autowired
     private IPusblisher _pusblisherData;
 
-    // Obtener todo
-    public List<publisher> findAllPublisher() {
-
-        return _pusblisherData.findAll();
-
+    // Obteber todo
+    public List<requestRegisterPublisherDto> findAllpublisher() {
+        try {
+            var publishers = _pusblisherData.findAll();
+            return MapToList(publishers);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al traer todos publisher" + e);
+        }
     }
 
     // Obtener por nombre
-    public List<publisher> findByNamePublisher(String name) {
+    public List<publisher> findByNamepublisher(String name) {
         return _pusblisherData.findByName(name);
     }
 
-    // Obtener por id
-    public Optional<publisher> findByIdPublisher(int id) {
-        return _pusblisherData.findById(id);
-    }
-
-    // Guardar
-    public responseDto savePublisher(requestRegisterPublisherDto publisherDto) { 
+    // Obteber por id
+    public requestRegisterPublisherDto findpublisherById(int id) {
         try {
-            _pusblisherData.save(MapToEntity(publisherDto));
-            return createResponse(HttpStatus.CREATED, "Publisher creado correctamente");
+            // Buscar por su ID
+            var publisher = _pusblisherData.findById(id);
+
+            // Si no se encuentraa, lanzamos una excepción
+            if (!publisher.isPresent()) {
+                throw new EntityNotFoundException("publisher not found with ID: " + id);
+            }
+
+            // Si se encuentra, la mapeamos a DTO y la retornamos
+            return MapToDto(publisher.get());
+
+        } catch (EntityNotFoundException e) {
+            // Excepción específica si no se encuentra
+            throw e; // Aquí puedes decidir si quieres loguear la excepción o no
         } catch (Exception e) {
-            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al guardar el publisher: " + e.getMessage());
+            // Cualquier otro error, como acceso a datos
+            throw new RuntimeException("Error occurred while fetching publisher with ID: " + id, e);
         }
-
     }
 
-    // Actualizar
-    public responseDto updatePublisher(requestRegisterPublisherDto publisherUpdate) {
-        // Validación: ID válido
-        if (publisherUpdate.getId_publisher() <= 0) {
-            return createResponse(HttpStatus.BAD_REQUEST, "ID inválido para la actualización");
+    // Guardar 
+    public responseDto savepublisher(requestRegisterPublisherDto publisherDto) {
+        // Validar que el id no exista
+        if (_pusblisherData.findById(publisherDto.getId_publisher()).isPresent()){
+            return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
         }
-        var publisher = findByIdPublisher(publisherUpdate.getId_publisher());
+        try {
+            
+            _pusblisherData.save(MapToEntity(publisherDto));
+            return createResponse(HttpStatus.CREATED, "Se creo correctamenete");
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear" + e.getMessage());
+        }
+    }
 
-        if (publisher.isPresent()) {
-            try {
-                publisher.get().setName(publisherUpdate.getName());
-                _pusblisherData.save(publisher.get());
-
-                return createResponse(HttpStatus.OK, "Publisher actualizado correctamente");
-            } catch (Exception e) {
-
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-                        "Error al actualizar el publisher: " + e.getMessage());
+    // Actualizar categoria
+    public responseDto updatepublisher(requestRegisterPublisherDto publisherDto) {
+        try {
+            if (publisherDto.getId_publisher() <= 0) {
+                return createResponse(HttpStatus.BAD_REQUEST, "ID inválido");
             }
-        } else {
-            return createResponse(HttpStatus.NOT_FOUND,
-                    "Publisher no encontrado con ID: " + publisherUpdate.getId_publisher());
-        }
 
-    }
-
-    // Borrar
-    public responseDto deletePublisher(int id) {
-        var publisher = findByIdPublisher(id);
-        if (publisher.isPresent()) {
-            try{
-            _pusblisherData.deleteById(id);
-            return createResponse(HttpStatus.OK, "Se elimino correctamente");
-            }catch(Exception e){
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar"+ e.getMessage());
+            // Verificar existencia
+            var existing = _pusblisherData.findById(publisherDto.getId_publisher());
+            if (!existing.isPresent()) {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
             }
-        } else {
 
-            return createResponse(HttpStatus.NOT_FOUND, "No se encontro el id del publisher");
+            // Mapeo actualizado y guardado
+            var updatedpublisher = MapToEntity(publisherDto);
+            _pusblisherData.save(updatedpublisher);
+            return createResponse(HttpStatus.OK, "Actualización exitosa");
+
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar: " + e.getMessage());
         }
     }
 
-    // Mapeo
+    public responseDto deletepublisher(int id) {
+        try {
+            var publisher = _pusblisherData.findById(id);
+            if (publisher.isPresent()) {
+                _pusblisherData.deleteById(id);
+                return createResponse(HttpStatus.OK, "Se borró correctamente");
+            } else {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
+            }
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar: " + e.getMessage());
+        }
+    }
+
+    // Mapeo de Dto a modelo
     public publisher MapToEntity(requestRegisterPublisherDto publisherDto) {
-        publisher publisher = new publisher();
-        // publisher.setId_publisher(publisherDto.getId_publisher());
-        publisher.setName(publisherDto.getName());
-        return publisher;
+        return new publisher(
+                publisherDto.getId_publisher(),
+                publisherDto.getName(),
+                null);
+
+    }
+
+    // Mapeo de Entidad a Dto
+    public requestRegisterPublisherDto MapToDto(publisher entity) {
+        return new requestRegisterPublisherDto(
+                entity.getId_publisher(),
+                entity.getName());
+    }
+
+    // Mapeao de entidad a lista de Dto
+    public List<requestRegisterPublisherDto> MapToList(List<publisher> entities) {
+        List<requestRegisterPublisherDto> dtos = new ArrayList<>();
+        for (publisher entity : entities) {
+            dtos.add(MapToDto(entity));
+        }
+        return dtos;
     }
 
     // Response
-    private responseDto createResponse(HttpStatus status, String message) {
+    public responseDto createResponse(HttpStatus status, String message) {
         responseDto response = new responseDto();
         response.setStatus(status);
         response.setMessage(message);

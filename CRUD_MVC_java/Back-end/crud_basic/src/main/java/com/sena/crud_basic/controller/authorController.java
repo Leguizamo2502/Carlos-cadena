@@ -37,7 +37,7 @@ public class authorController {
     //Obtener por id
     @GetMapping("/{id}")
     public ResponseEntity<Object> findByIdauthor(@PathVariable int id){
-        var author = _authorService.findByIdauthor(id);
+        var author = _authorService.findauthorById(id);
         return new ResponseEntity<>(author,HttpStatus.OK);
     }
 

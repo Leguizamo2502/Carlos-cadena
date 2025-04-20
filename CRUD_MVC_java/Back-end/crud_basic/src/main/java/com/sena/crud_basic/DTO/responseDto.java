@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 public class responseDto {
     private HttpStatus status;
     private String message;
+
+    
     public responseDto() {
     }
     public responseDto(HttpStatus status, String message) {

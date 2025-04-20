@@ -38,7 +38,7 @@ public class UsersController {
     //Obtener por id
     @GetMapping("/{id}")
     public ResponseEntity<Object> findByIdusers(@PathVariable int id){
-        var users = _usersService.findByIdusers(id);
+        var users = _usersService.findusersById(id);
         return new ResponseEntity<>(users,HttpStatus.OK);
     }
 

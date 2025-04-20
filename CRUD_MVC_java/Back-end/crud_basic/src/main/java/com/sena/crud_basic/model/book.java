@@ -41,19 +41,15 @@ public class book {
     // private book_publisher book_publisher;
 
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"book"})
     private List<book_author> book_author = new ArrayList<>();
 
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"book"})
     private List<book_category> book_category = new ArrayList<>();
 
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"book"})
     private List<book_publisher> book_publisher = new ArrayList<>();
 
     @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"book"})
     private List<loan_detail> loans = new ArrayList<>();
 
     public book() {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,36 +25,34 @@ import com.sena.crud_basic.services.bookPublisherService;
 public class bookPublisherController {
 
     @Autowired
-    private bookPublisherService bookPublisherService;
+    private bookPublisherService _bookPublisherService;
 
     @GetMapping("/")
-    public ResponseEntity<List<book_publisher>> getAll() {
-        return ResponseEntity.ok(bookPublisherService.findAll());
+    public ResponseEntity<Object> getAll() {
+        var Listbookpublisher = _bookPublisherService.findAllbookPublisher();
+        return new ResponseEntity<Object>(Listbookpublisher, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
-        Optional<book_publisher> result = bookPublisherService.findById(id);
-        if (result.isPresent()) {
-            return ResponseEntity.ok(result.get());
-        } else {
-            return ResponseEntity.status(404).body("No se encontró la relación con ID: " + id);
-        }
+        var Listbookpublisher = _bookPublisherService.findbookPublisherById(id);
+        return new ResponseEntity<Object>(Listbookpublisher, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<responseDto> create(@RequestBody requestRegisterBookPublisherDto dto) {
-        responseDto response = bookPublisherService.save(dto);
-        return ResponseEntity.status(response.getStatus()).body(response);
+        responseDto response = _bookPublisherService.savebookPublisher(dto);
+        return new ResponseEntity<>(response,response.getStatus());
     }
     @PutMapping("/")
     public ResponseEntity<responseDto> update(@RequestBody requestRegisterBookPublisherDto dto) {
-        responseDto response = bookPublisherService.update(dto);
-        return ResponseEntity.status(response.getStatus()).body(response);
+        responseDto response = _bookPublisherService.updatebookPublisher(dto);
+        return new ResponseEntity<>(response,response.getStatus());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<responseDto> delete(@PathVariable int id) {
-        return ResponseEntity.status(bookPublisherService.delete(id).getStatus()).body(bookPublisherService.delete(id));
+        responseDto response = _bookPublisherService.deletebookPublisher(id);
+        return new ResponseEntity<>(response,response.getStatus());
     }
 }

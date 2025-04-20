@@ -1,20 +1,23 @@
 package com.sena.crud_basic.services;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.sena.crud_basic.DTO.requestRegisterBookPublisherDto;
+
 import com.sena.crud_basic.DTO.responseDto;
 import com.sena.crud_basic.interfaces.IBook;
 import com.sena.crud_basic.interfaces.IBookPublisher;
 import com.sena.crud_basic.interfaces.IPusblisher;
-import com.sena.crud_basic.model.book;
 import com.sena.crud_basic.model.book_publisher;
+import com.sena.crud_basic.model.book;
 import com.sena.crud_basic.model.publisher;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class bookPublisherService {
@@ -27,80 +30,129 @@ public class bookPublisherService {
     @Autowired
     private IPusblisher _publisherData;
 
-    public List<book_publisher> findAll() {
-        return _bookPublisherData.findAll();
-    }
-
-    public Optional<book_publisher> findById(int id) {
-        return _bookPublisherData.findById(id);
-    }
-
-    public responseDto save(requestRegisterBookPublisherDto dto) {
+    // Obteber todo
+    public List<requestRegisterBookPublisherDto> findAllbookPublisher() {
         try {
-            Optional<book> book  = _bookData.findById(dto.getId_book());
-            Optional<publisher> publisher = _publisherData.findById(dto.getId_publisher());
+            var bookPublishers = _bookPublisherData.findAll();
+            return MapToList(bookPublishers);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al traer todos bookPublisher" + e);
+        }
+    }
 
-            if (book.isPresent() && publisher.isPresent()) {
-                book_publisher book_publisher = new book_publisher();
-                book_publisher.setBook(book.get());
-                book_publisher.setPublisher(publisher.get());
+    // // Obtener por nombre
+    // public List<bookPublisher> findByNamebookPublisher(String name) {
+    // return _bookPublisherData.findByName(name);
+    // }
 
-                _bookPublisherData.save(book_publisher);
-                return createResponse(HttpStatus.CREATED, "Relación book_publisher creada correctamente");
-            } else {
-                return createResponse(HttpStatus.NOT_FOUND, "Book o Publisher no encontrado");
-                
+    // Obteber por id
+    public requestRegisterBookPublisherDto findbookPublisherById(int id) {
+        try {
+            // Buscar por su ID
+            var bookPublisher = _bookPublisherData.findById(id);
+
+            // Si no se encuentraa, lanzamos una excepción
+            if (!bookPublisher.isPresent()) {
+                throw new EntityNotFoundException("bookPublisher not found with ID: " + id);
             }
+
+            // Si se encuentra, la mapeamos a DTO y la retornamos
+            return MapToDto(bookPublisher.get());
+
+        } catch (EntityNotFoundException e) {
+            // Excepción específica si no se encuentra
+            throw e; // Aquí puedes decidir si quieres loguear la excepción o no
+        } catch (Exception e) {
+            // Cualquier otro error, como acceso a datos
+            throw new RuntimeException("Error occurred while fetching bookPublisher with ID: " + id, e);
+        }
+    }
+
+    // Guardar categoria
+    public responseDto savebookPublisher(requestRegisterBookPublisherDto bookPublisherDto) {
+        // Validar que el id no exista
+        if (_bookPublisherData.findById(bookPublisherDto.getId_book_publisher()).isPresent()) {
+            return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
+        }
+        try {
+            _bookPublisherData.save(MapToEntity(bookPublisherDto));
+            return createResponse(HttpStatus.CREATED, "Se creo correctamenete");
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear" + e.getMessage());
+        }
+    }
+
+    // Actualizar categoria
+    public responseDto updatebookPublisher(requestRegisterBookPublisherDto bookPublisherDto) {
+        try {
+            if (bookPublisherDto.getId_book_publisher() <= 0) {
+                return createResponse(HttpStatus.BAD_REQUEST, "ID inválido");
+            }
+
+            // Verificar existencia
+            var existing = _bookPublisherData.findById(bookPublisherDto.getId_book_publisher());
+            if (!existing.isPresent()) {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
+            }
+
+            // Mapeo actualizado y guardado
+            var updatedbookPublisher = MapToEntity(bookPublisherDto);
+            _bookPublisherData.save(updatedbookPublisher);
+            return createResponse(HttpStatus.OK, "Actualización exitosa");
 
         } catch (Exception e) {
-            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al guardar: " + e.getMessage());
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar: " + e.getMessage());
         }
     }
 
-    // Update
-    public responseDto update(requestRegisterBookPublisherDto dto) {
-        if (dto.getId_book_publisher() <= 0) {
-            return createResponse(HttpStatus.BAD_REQUEST, "ID inválido para la actualización");
-        }
-        Optional<book_publisher> existing = _bookPublisherData.findById(dto.getId_book_publisher());
-        if (existing.isPresent()) {
-            try {
-                Optional<book> bookOpt = _bookData.findById(dto.getId_book());
-                Optional<publisher> publisherOpt = _publisherData.findById(dto.getId_publisher());
-
-                if (bookOpt.isPresent() && publisherOpt.isPresent()) {
-                    book_publisher bp = existing.get();
-                    bp.setBook(bookOpt.get());
-                    bp.setPublisher(publisherOpt.get());
-
-                    _bookPublisherData.save(bp);
-                    return createResponse(HttpStatus.OK, "Relación book_publisher actualizada correctamente");
-                } else {
-                    return createResponse(HttpStatus.NOT_FOUND, "Book o Publisher no encontrado");
-                }
-            } catch (Exception e) {
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar: " + e.getMessage());
-            }
-        }
-        return createResponse(HttpStatus.NOT_FOUND,
-                "Relación book_publisher no encontrada con ID: " + dto.getId_book_publisher());
-    }
-
-    public responseDto delete(int id) {
-        var result = findById(id);
-        if (result.isPresent()) {
-            try {
+    public responseDto deletebookPublisher(int id) {
+        try {
+            var bookPublisher = _bookPublisherData.findById(id);
+            if (bookPublisher.isPresent()) {
                 _bookPublisherData.deleteById(id);
-                return createResponse(HttpStatus.OK, "Eliminado correctamente");
-            } catch (Exception e) {
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar: " + e.getMessage());
+                return createResponse(HttpStatus.OK, "Se borró correctamente");
+            } else {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
             }
-        } else {
-            return createResponse(HttpStatus.NOT_FOUND, "No se encontró la relación con ID: " + id);
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar: " + e.getMessage());
         }
     }
 
-    private responseDto createResponse(HttpStatus status, String message) {
+    // Mapeo de Dto a modelo
+    public book_publisher MapToEntity(requestRegisterBookPublisherDto dto) {
+        book bookEntity = _bookData.findById(dto.getId_book())
+            .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+    
+        publisher publisherEntity = _publisherData.findById(dto.getId_publisher())
+            .orElseThrow(() -> new RuntimeException("Editorial no encontrada"));
+    
+        return new book_publisher(
+            dto.getId_book_publisher(), // o 0 si estás creando
+            publisherEntity,
+            bookEntity
+        );
+    }
+
+    // Mapeo de Entidad a Dto
+    public requestRegisterBookPublisherDto MapToDto(book_publisher entity) {
+        return new requestRegisterBookPublisherDto(
+                entity.getId_book_publisher(),
+                entity.getBook().getId_book(),
+                entity.getPublisher().getId_publisher());
+    }
+
+    // Mapeao de entidad a lista de Dto
+    public List<requestRegisterBookPublisherDto> MapToList(List<book_publisher> entities) {
+        List<requestRegisterBookPublisherDto> dtos = new ArrayList<>();
+        for (book_publisher entity : entities) {
+            dtos.add(MapToDto(entity));
+        }
+        return dtos;
+    }
+
+    // Response
+    public responseDto createResponse(HttpStatus status, String message) {
         responseDto response = new responseDto();
         response.setStatus(status);
         response.setMessage(message);

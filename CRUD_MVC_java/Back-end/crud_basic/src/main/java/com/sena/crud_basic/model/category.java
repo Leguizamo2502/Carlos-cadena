@@ -3,8 +3,6 @@ package com.sena.crud_basic.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.*;
 
 @Entity(name = "category")
@@ -25,7 +23,6 @@ public class category {
     // private book_category book_category;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({ "category" })
     private List<book_category> book_category = new ArrayList<>();
     // @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     // private List<book_category> book_category = new ArrayList<>();
