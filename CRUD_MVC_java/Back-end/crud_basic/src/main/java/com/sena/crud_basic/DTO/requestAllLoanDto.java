@@ -2,17 +2,16 @@ package com.sena.crud_basic.DTO;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 public class requestAllLoanDto {
     private int id_loan;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private int id_book;
+    private int id_user;
     private LocalDate loan_date;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate return_date;
     private String status; 
-    private int id_user;
-    private int id_book;
+    
     public requestAllLoanDto() {
     }
     public requestAllLoanDto(int id_loan, LocalDate loan_date, LocalDate return_date, String status, int id_user,

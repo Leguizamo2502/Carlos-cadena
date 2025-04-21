@@ -50,9 +50,9 @@ public class UsersController {
     }
 
     //Actualizar
-    @PutMapping("/")
-    public ResponseEntity<responseDto> updateusers(@RequestBody requestRegisterUsersDto users) {
-        responseDto response = _usersService.updateusers(users);
+    @PutMapping("/{id}")
+    public ResponseEntity<responseDto> updateusers(@PathVariable int id,@RequestBody requestRegisterUsersDto users) {
+        responseDto response = _usersService.updateusers(id,users);
         return new ResponseEntity<>(response,response.getStatus());
     }
     //Borrar

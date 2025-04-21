@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sena.crud_basic.DTO.requestAllLoanDto;
 import com.sena.crud_basic.DTO.requestRegisterLoanDto;
 import com.sena.crud_basic.DTO.responseDto;
 import com.sena.crud_basic.services.loanService;
@@ -51,7 +52,7 @@ public class loanController {
 
     //Guardar
     @PostMapping("/")
-    public ResponseEntity<responseDto> saveloan(@RequestBody requestRegisterLoanDto loanDto) {
+    public ResponseEntity<responseDto> saveloan(@RequestBody requestAllLoanDto loanDto) {
        responseDto response = _loanService.saveloan(loanDto);
         return new ResponseEntity<>(response,response.getStatus());
     }

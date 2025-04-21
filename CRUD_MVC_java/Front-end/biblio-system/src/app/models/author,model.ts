@@ -3,3 +3,8 @@ export interface author{
     first_name: string,
     last_name: string
 }
+
+export interface authorCrear{
+    first_name: string,
+    last_name: string
+}

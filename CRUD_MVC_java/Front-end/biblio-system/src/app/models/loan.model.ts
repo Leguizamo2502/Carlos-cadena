@@ -3,11 +3,18 @@ export interface loan{
     id_loan:number;
     fullName:String;
     bookTitle:String;
-    quantity:number;
+    status: String;
+    loan_date: String;
+    return_date:String
+    // quantity:number;
 }
 export interface loanCreate{
     // id_loan:number;
-    fullName:String;
-    bookTitle:String;
-    quantity:number;
+    // id_loan:number;
+    loan_date: String;
+    return_date:String;
+    status: String;
+    
+    
+    
 }

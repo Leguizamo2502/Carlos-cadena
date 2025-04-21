@@ -10,6 +10,12 @@
   <app-form-book></app-form-book>
   <app-filterbook></app-filterbook>
 
+
+  <button mat-button routerLink="/manage-books/createcategory">Crear Categoria</button>
+  <button mat-button routerLink="/manage-books/createauthor">Crear Autor</button>
+  <button mat-button routerLink="/manage-books/createpublisher">Crear Editorial</button>
+
+
   <table mat-table [dataSource]="book" class="mat-elevation-z8">
   <ng-container matColumnDef="title">
     <th mat-header-cell *matHeaderCellDef> Título </th>

@@ -76,19 +76,20 @@ public class usersService {
     }
 
     // Actualizar categoria
-    public responseDto updateusers(requestRegisterUsersDto usersDto) {
+    public responseDto updateusers(int id,requestRegisterUsersDto usersDto) {
         try {
-            if (usersDto.getId_user() <= 0) {
+            if (id <= 0) {
                 return createResponse(HttpStatus.BAD_REQUEST, "ID inválido");
             }
 
             // Verificar existencia
-            var existing = _usersData.findById(usersDto.getId_user());
+            var existing = _usersData.findById(id);
             if (!existing.isPresent()) {
                 return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
             }
 
             // Mapeo actualizado y guardado
+            usersDto.setId_user(id);
             var updatedusers = MapToEntity(usersDto);
             _usersData.save(updatedusers);
             return createResponse(HttpStatus.OK, "Actualización exitosa");
@@ -116,7 +117,7 @@ public class usersService {
     // Mapeo de Dto a modelo 
     public users MapToEntity(requestRegisterUsersDto usersDto) {
         return new users(
-                0,
+                usersDto.getId_user(),
                 usersDto.getFirst_name(),
                 usersDto.getLast_name(),
                 usersDto.getIdentification(),

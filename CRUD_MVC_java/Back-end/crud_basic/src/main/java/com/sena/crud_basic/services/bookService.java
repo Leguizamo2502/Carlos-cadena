@@ -181,19 +181,20 @@ public class bookService {
     }
 
     // Actualizar categoria
-    public responseDto updatebook(requestRegisterBookDto bookDto) {
+    public responseDto updatebook(int id,requestRegisterBookDto bookDto) {
         try {
-            if (bookDto.getId_book() <= 0) {
+            if (id <= 0) {
                 return createResponse(HttpStatus.BAD_REQUEST, "ID inválido");
             }
 
             // Verificar existencia
-            var existing = _bookData.findById(bookDto.getId_book());
+            var existing = _bookData.findById(id);
             if (!existing.isPresent()) {
                 return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
             }
 
             // Mapeo actualizado y guardado
+            bookDto.setId_book(id);
             var updatedbook = MapToEntity(bookDto);
             _bookData.save(updatedbook);
             return createResponse(HttpStatus.OK, "Actualización exitosa");

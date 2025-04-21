@@ -16,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FilterbookComponent } from '../../components/filterbook/filterbook.component';
 import { FormBookComponent } from '../../components/form-book/form-book.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-manage-books',
@@ -31,7 +32,8 @@ import { FormBookComponent } from '../../components/form-book/form-book.componen
     MatIconModule,
     FilterbookComponent,
     FormBookComponent,
-    FormBookComponent
+    FormBookComponent,
+    RouterLink
   ],
   templateUrl: './manage-books.component.html',
   styleUrl: './manage-books.component.css',

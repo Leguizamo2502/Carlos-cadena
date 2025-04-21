@@ -1,1 +1,4 @@
-<p>el if es {{id}}</p>
+el id es {{id}}
+@if (modelo) {
+    <app-form-user [modelo]="modelo" (posteoFormulario)="guardar($event)"></app-form-user>
+}

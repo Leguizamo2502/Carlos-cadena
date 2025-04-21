@@ -118,7 +118,7 @@ public class loanDetailService {
     
         return new loan_detail(
             dto.getId_loan_detail(), 
-            dto.getQuantity(),
+            // dto.getQuantity(),
             loanEntity,
             bookEntity
         );
@@ -129,10 +129,8 @@ public class loanDetailService {
     public requestRegisterLoanDetailDto MapToDto(loan_detail entity) {
         return new requestRegisterLoanDetailDto(
                 entity.getId_loan_detail(),
-                entity.getQuantity(),
                 entity.getLoan().getId_loan(),
                 entity.getBook().getId_book()
-                
         );
     }
 

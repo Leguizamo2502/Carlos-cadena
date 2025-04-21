@@ -4,6 +4,10 @@ export interface category {
     name: string
 }
 
+export interface categoryCrear{
+    name: string
+}
+
 export interface categoryTraer{
     name: string
 }

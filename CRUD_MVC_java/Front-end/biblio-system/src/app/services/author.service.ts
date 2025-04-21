@@ -1,8 +1,8 @@
+import { author, authorCrear } from './../models/author,model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { author } from '../models/author,model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,4 +15,9 @@ export class AuthorService {
   public getAuthor(): Observable<author[]>{
     return this.http.get<author[]>(this.URLbase);
   }
+
+  public createdAuthor(authors:authorCrear){
+    return this.http.post(this.URLbase,authors);
+  }
+
 }

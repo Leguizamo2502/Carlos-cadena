@@ -17,8 +17,16 @@ export class UserService {
     return this.http.get<user[]>(this.URLbase);
   }
 
+  public getIdUser(id:number):Observable<user>{
+    return this.http.get<user>(this.URLbase+id)
+  }
+
   public createdUser(users:userCreated){
     return this.http.post(this.URLbase,users);
+  }
+
+  public updateUser(id:number,user:userCreated){
+    return this.http.put(this.URLbase+id,user)
   }
 
 // private URLid = environment.apiUrl + '/api/v1/user'

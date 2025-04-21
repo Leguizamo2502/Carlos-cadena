@@ -1,11 +1,15 @@
 package com.sena.crud_basic.DTO;
 
-import java.util.List;
+import java.time.LocalDate;
+
 
 public interface responseLoanDto {
     Integer getId_loan(); 
     String getFullName(); // Aquí recibimos el nombre completo como una cadena.
+    String getStatus();
     String getBookTitle(); 
-    Integer getQuantity(); 
+    LocalDate getLoan_date();
+    LocalDate getReturn_date();
+    // Integer getQuantity(); 
 
 }

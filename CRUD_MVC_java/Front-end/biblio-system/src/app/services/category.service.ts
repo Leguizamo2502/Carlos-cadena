@@ -1,8 +1,8 @@
+import { category, categoryCrear } from './../models/category.model';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { category } from '../models/category.model';
 import { environment } from '../../environments/environment';
 
 
@@ -16,5 +16,9 @@ export class CategoryService {
 
   public getCategory(): Observable<category[]> {
     return this.http.get<category[]>(this.URLbase);
+  }
+
+  public createCategory(categorys:categoryCrear){
+    return this.http.post(this.URLbase,categorys);
   }
 }

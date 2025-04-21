@@ -13,8 +13,8 @@ public class loan_detail {
     @Column(name = "id_loan_detail", length = 10, nullable = false)
     private int id_loan_detail;
 
-    @Column(name = "quantity", nullable = false, length = 10)
-    private int quantity;
+    // @Column(name = "quantity", nullable = false, length = 10)
+    // private int quantity;
 
     
 
@@ -35,10 +35,8 @@ public class loan_detail {
     private book book;
     public loan_detail() {
     }
-    public loan_detail(int id_loan_detail, int quantity, com.sena.crud_basic.model.loan loan,
-            com.sena.crud_basic.model.book book) {
+    public loan_detail(int id_loan_detail, com.sena.crud_basic.model.loan loan, com.sena.crud_basic.model.book book) {
         this.id_loan_detail = id_loan_detail;
-        this.quantity = quantity;
         this.loan = loan;
         this.book = book;
     }
@@ -47,12 +45,6 @@ public class loan_detail {
     }
     public void setId_loan_detail(int id_loan_detail) {
         this.id_loan_detail = id_loan_detail;
-    }
-    public int getQuantity() {
-        return quantity;
-    }
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
     public loan getLoan() {
         return loan;
@@ -66,6 +58,8 @@ public class loan_detail {
     public void setBook(book book) {
         this.book = book;
     }
+    
+    
 
     
 

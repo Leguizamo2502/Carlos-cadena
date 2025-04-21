@@ -1,0 +1,133 @@
+/* form-loan.component.css */
+.container{
+    margin-bottom: 1rem;
+}
+/* Estilos generales del formulario */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Campos de información */
+  .info-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .info-label {
+    font-size: 0.875rem;
+    color: #5f6368;
+    font-weight: 500;
+  }
+  
+  /* Inputs tipo date personalizados */
+  input[type="date"] {
+    padding: 0.75rem 1rem;
+    border: 1px solid #dfe1e5;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+  }
+  
+  input[type="date"]:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+  }
+  
+  /* Campos de formulario Material */
+  mat-form-field {
+    width: 100%;
+  }
+  
+  .mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: rgba(0, 0, 0, 0.04);
+    border-radius: 4px;
+    padding: 0.75em 0.75em 0 0.75em;
+  }
+  
+  .mat-form-field-appearance-fill.mat-focused .mat-form-field-flex {
+    background-color: rgba(26, 115, 232, 0.04);
+  }
+  
+  /* Botones de acción */
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary {
+    background-color: #1a73e8;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #1765cc;
+    box-shadow: 0 2px 6px rgba(26, 115, 232, 0.4);
+  }
+  
+  .btn-secondary {
+    border: 1px solid #dadce0;
+    color: #3c4043;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #f1f3f4;
+  }
+  
+  /* Mensajes de error */
+  .error-message {
+    color: #d93025;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  
+  .mat-error {
+    font-size: 0.75rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    form {
+      padding: 1.5rem;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+  }
+  
+  /* Estilo para el datepicker */
+  .mat-datepicker-content {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+  }
+  
+  /* Estilo para los selects abiertos */
+  .mat-select-panel {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }

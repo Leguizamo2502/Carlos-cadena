@@ -1,0 +1,44 @@
+<form (submit)="guardar()" [formGroup]="form">
+    <div class="info-field">
+      <div class="info-label">Nombre:</div>
+      <input type="text" [formControl]="form.controls.first_name" matInput>
+      <div class="error-message" *ngIf="firstNameControl?.invalid && (firstNameControl?.dirty || firstNameControl?.touched)">
+        <span *ngIf="firstNameControl?.errors?.['required']">El nombre es requerido.</span>
+        <span *ngIf="firstNameControl?.errors?.['minlength']">El nombre debe tener al menos 2 caracteres.</span>
+        <span *ngIf="firstNameControl?.errors?.['maxlength']">El nombre no puede exceder 50 caracteres.</span>
+      </div>
+    </div>
+    
+    <div class="info-field">
+      <div class="info-label">Apellido:</div>
+      <input type="text" [formControl]="form.controls.last_name" matInput>
+      <div class="error-message" *ngIf="lastNameControl?.invalid && (lastNameControl?.dirty || lastNameControl?.touched)">
+        <span *ngIf="lastNameControl?.errors?.['required']">El apellido es requerido.</span>
+        <span *ngIf="lastNameControl?.errors?.['minlength']">El apellido debe tener al menos 2 caracteres.</span>
+        <span *ngIf="lastNameControl?.errors?.['maxlength']">El apellido no puede exceder 50 caracteres.</span>
+      </div>
+    </div>
+    
+    <div class="info-field">
+      <div class="info-label">Identificación:</div>
+      <input type="text" [formControl]="form.controls.identification" matInput>
+      <div class="error-message" *ngIf="identificationControl?.invalid && (identificationControl?.dirty || identificationControl?.touched)">
+        <span *ngIf="identificationControl?.errors?.['required']">La identificación es requerida.</span>
+        <span *ngIf="identificationControl?.errors?.['pattern']">La identificación debe contener entre 8 y 12 dígitos numéricos.</span>
+      </div>
+    </div>
+    
+    <div class="info-field">
+      <div class="info-label">Email:</div>
+      <input type="email" [formControl]="form.controls.email" matInput>
+      <div class="error-message" *ngIf="emailControl?.invalid && (emailControl?.dirty || emailControl?.touched)">
+        <span *ngIf="emailControl?.errors?.['required']">El email es requerido.</span>
+        <span *ngIf="emailControl?.errors?.['email']">Ingrese un email válido.</span>
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <button class="btn btn-primary" type="submit" mat-flat-button [disabled]="form.invalid">Guardar</button>
+      <a class="btn btn-secondary" mat-stroked-button routerLink="/register-user">Cancelar</a>
+    </div>
+  </form>

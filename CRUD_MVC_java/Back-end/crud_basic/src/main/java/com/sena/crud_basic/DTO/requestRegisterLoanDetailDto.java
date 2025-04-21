@@ -2,14 +2,13 @@ package com.sena.crud_basic.DTO;
 
 public class requestRegisterLoanDetailDto {
     private int id_loan_detail;
-    private int quantity;
+    // private int quantity;
     private int id_loan;
     private int id_book;
     public requestRegisterLoanDetailDto() {
     }
-    public requestRegisterLoanDetailDto(int id_loan_detail, int quantity, int id_loan, int id_book) {
+    public requestRegisterLoanDetailDto(int id_loan_detail, int id_loan, int id_book) {
         this.id_loan_detail = id_loan_detail;
-        this.quantity = quantity;
         this.id_loan = id_loan;
         this.id_book = id_book;
     }
@@ -18,12 +17,6 @@ public class requestRegisterLoanDetailDto {
     }
     public void setId_loan_detail(int id_loan_detail) {
         this.id_loan_detail = id_loan_detail;
-    }
-    public int getQuantity() {
-        return quantity;
-    }
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
     public int getId_loan() {
         return id_loan;
@@ -37,6 +30,7 @@ public class requestRegisterLoanDetailDto {
     public void setId_book(int id_book) {
         this.id_book = id_book;
     }
+    
 
     
 

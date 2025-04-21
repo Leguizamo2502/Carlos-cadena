@@ -1,41 +1,46 @@
+/* form.component.css */
+
 /* Contenedor principal del formulario */
 form {
-    max-width: 400px;
-    margin: 1rem;
-    padding: 1.5rem;
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
     background: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
-  /* Campos de información */
+  /* Estilo para cada campo del formulario */
   .info-field {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
   
+  /* Estilo para las etiquetas */
   .info-label {
+    display: block;
+    margin-bottom: 0.5rem;
     font-size: 0.875rem;
     color: #5f6368;
-    margin-bottom: 0.001rem;
     font-weight: 500;
   }
   
-  /* Inputs */
-  input[matInput] {
+  /* Estilo para los inputs */
+  input[type="text"] {
     width: 100%;
-    padding: 0.2rem;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
     border: 1px solid #dfe1e5;
     border-radius: 4px;
-    font-size: 1rem;
-    transition: border 0.3s ease;
+    transition: all 0.3s ease;
   }
   
-  input[matInput]:focus {
-    border-color: #1a73e8;
+  input[type="text"]:focus {
     outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
   }
   
-  /* Botones */
+  /* Contenedor de botones */
   .action-buttons {
     display: flex;
     justify-content: flex-end;
@@ -43,16 +48,19 @@ form {
     margin-top: 2rem;
   }
   
+  /* Estilo base para botones */
   .btn {
-    padding: 0.5rem 1rem;
+    padding: 0.625rem 1.5rem;
     border-radius: 4px;
+    font-size: 0.875rem;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.05em;
     cursor: pointer;
     transition: all 0.3s ease;
   }
   
+  /* Botón primario */
   .btn-primary {
     background-color: #1a73e8;
     color: white;
@@ -60,45 +68,30 @@ form {
   }
   
   .btn-primary:hover {
-    background-color: #0d62c9;
-    box-shadow: 0 2px 5px rgba(26, 115, 232, 0.3);
+    background-color: #1765cc;
+    box-shadow: 0 2px 6px rgba(26, 115, 232, 0.4);
   }
   
+  /* Botón secundario */
   .btn-secondary {
     background-color: transparent;
     color: #1a73e8;
-    border: 1px solid #dadce0;
+    border: 1px solid #1a73e8;
   }
   
   .btn-secondary:hover {
-    background-color: #f1f3f4;
+    background-color: rgba(26, 115, 232, 0.04);
   }
   
-  /* Validación */
-  .ng-invalid.ng-touched:not(form) {
-    border-color: #d93025;
-  }
+  /* Mensajes de error (puedes añadir esto si necesitas validación) */
   .error-message {
-    color: #f44336;
-    font-size: 12px;
-    margin-top: 4px;
+    color: #d93025;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
   }
   
-  .info-field {
-    margin-bottom: 16px;
-  }
-  
-  input.ng-invalid.ng-touched {
-    border-color: #f44336;
-  }
-  
-  button[disabled] {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
+  /* Estilos responsivos */
+  @media (max-width: 600px) {
     form {
       padding: 1.5rem;
       margin: 1rem;

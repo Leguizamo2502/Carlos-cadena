@@ -1,3 +1,4 @@
+import { loan, loanCreate } from './../../models/loan.model';
 import { user } from './../../models/user.model';
 import { BookService } from './../../services/book.service';
 import { book } from './../../models/book.model';
@@ -15,7 +16,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 import { LoanService } from '../../services/loan.service';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { RegisterLoanComponent } from '../../views/register-loan/register-loan.component';
 
 @Component({
   selector: 'app-form-loan',
@@ -29,14 +32,16 @@ import { MatNativeDateModule } from '@angular/material/core';
     RouterLink,
     MatSelectModule,
     FormsModule,
-    MatCheckboxModule,
     MatSnackBarModule,
+    MatNativeDateModule,
+    MatCheckboxModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatIconModule,
     
   ],
   templateUrl: './form-loan.component.html',
-  styleUrl: './form-loan.component.css'
+  styleUrl: './form-loan.component.css',
+  providers: [provideNativeDateAdapter()]
 })
 export class FormLoanComponent {
   private readonly fb = inject(FormBuilder);
@@ -52,8 +57,8 @@ export class FormLoanComponent {
   books: book[]=[];
 
   form = this.fb.group({
-    loan_date:[new Date().toISOString()],
-    return_date:[null],
+    loan_date:[''],
+    return_date:[''],
     status:['Pendiente'],
     id_user:[''],
     id_book:['']
@@ -70,7 +75,22 @@ export class FormLoanComponent {
 
   guardar(){
     console.log(this.form.value)
+    const loan = this.form.value as loanCreate;
+    this.loanService.createLoan(loan).subscribe(()=>{
+      this.router.navigate(['/']);
+    })
   }
+
+  load = inject(RegisterLoanComponent)
+
+  delete(loanId:number){
+    this.loanService.deleteLoan(loanId).subscribe(()=>{
+      console.log("Loan eliminado");
+      this.load.loadLoan();
+    })
+  }
+
+
 
 
 }

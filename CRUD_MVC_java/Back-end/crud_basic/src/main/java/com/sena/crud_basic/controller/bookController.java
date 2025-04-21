@@ -59,9 +59,9 @@ public class bookController {
     }
 
     // Actualizar
-    @PutMapping("/")
-    public ResponseEntity<responseDto> updatebook(@RequestBody requestRegisterBookDto book) {
-        responseDto response = _bookService.updatebook(book);
+    @PutMapping("/{id}")
+    public ResponseEntity<responseDto> updatebook(@PathVariable int id,@RequestBody requestRegisterBookDto book) {
+        responseDto response = _bookService.updatebook(id,book);
         return new ResponseEntity<>(response, response.getStatus());
     }
 

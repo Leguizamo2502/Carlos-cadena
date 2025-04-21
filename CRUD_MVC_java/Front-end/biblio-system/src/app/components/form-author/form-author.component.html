@@ -1,0 +1,26 @@
+<form (submit)="guardar()" [formGroup]="form">
+    <div class="info-field">
+        <div class="info-label">Nombre:</div>
+        <input type="text" [formControl]="form.controls.first_name" matInput required>
+
+        <div *ngIf="form.controls.first_name.invalid && form.controls.first_name.touched" class="error-message">
+            <span *ngIf="form.controls.first_name.errors?.['required']">El nombre es obligatorio.</span>
+            <span *ngIf="form.controls.first_name.errors?.['minlength']">Debe tener al menos 3 caracteres.</span>
+        </div>
+    </div>
+
+    <div class="info-field">
+        <div class="info-label">Apellido:</div>
+        <input type="text" [formControl]="form.controls.last_name" matInput required>
+
+        <div *ngIf="form.controls.last_name.invalid && form.controls.last_name.touched" class="error-message">
+            <span *ngIf="form.controls.last_name.errors?.['required']">El nombre es obligatorio.</span>
+            <span *ngIf="form.controls.last_name.errors?.['minlength']">Debe tener al menos 3 caracteres.</span>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn btn-primary" type="submit" mat-flat-button [disabled]="form.invalid">Guardar</button>
+        <a class="btn btn-secondary" mat-stroked-button routerLink="/manage-books">Cancelar</a>
+    </div>
+</form>

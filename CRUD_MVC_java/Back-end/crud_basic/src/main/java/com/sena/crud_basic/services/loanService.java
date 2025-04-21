@@ -16,6 +16,7 @@ import com.sena.crud_basic.interfaces.ILoan;
 import com.sena.crud_basic.interfaces.ILoanDetail;
 import com.sena.crud_basic.interfaces.IUsers;
 import com.sena.crud_basic.model.loan;
+import com.sena.crud_basic.model.loan_detail;
 import com.sena.crud_basic.model.users;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -44,14 +45,14 @@ public class loanService {
         }
     }
 
-    //Obtern por join
-    public List<responseLoanDto> findAllJoin(){
+    // Obtern por join
+    public List<responseLoanDto> findAllJoin() {
         return _loanData.findAllJoin();
     }
 
     // Obtener por nombre
     // public List<loan> findByNameloan(String name) {
-    //     return _loanData.findByName(name);
+    // return _loanData.findByName(name);
     // }
 
     // Obteber por id
@@ -78,23 +79,31 @@ public class loanService {
     }
 
     // Guardar categoria
-    public responseDto saveloan(requestRegisterLoanDto loanDto) {
+    public responseDto saveloan(requestAllLoanDto loanDto) {
         // Validar que el id no exista
         if (_loanData.findById(loanDto.getId_loan()).isPresent()) {
             return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
         }
         try {
-            _loanData.save(MapToEntity(loanDto));
+            loan loan = MapToEntity(loanDto);
+            _loanData.save(loan);
+            saveRelation(loan, loanDto);
             return createResponse(HttpStatus.CREATED, "Se creo correctamenete");
         } catch (Exception e) {
             return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear" + e.getMessage());
         }
     }
 
-    //Guardar relaciones
-    public void saveRelation(loan loan, requestAllLoanDto dto){
-        //guardar libro
+    // Guardar relaciones
+    public void saveRelation(loan loan, requestAllLoanDto dto) {
+        // guardar libro
         
+        Integer bookId = dto.getId_book();
+        var book = _bookData.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("bookId no encontrado con ID: " + bookId));
+        var create = new loan_detail(0, loan, book);
+        _loanDetail.save(create);
+
     }
 
     // Actualizar categoria
@@ -139,25 +148,37 @@ public class loanService {
         users usersEntity = new users();
         usersEntity.setId_user(loanDto.getId_user());
         return new loan(
-            loanDto.getId_loan(),
-            LocalDate.now(),
-            loanDto.getReturn_date(),
-            loanDto.getStatus(),
-            usersEntity,
-            null
-            );
+                loanDto.getId_loan(),
+                LocalDate.now(),
+                loanDto.getReturn_date(),
+                loanDto.getStatus(),
+                usersEntity,
+                null);
+
+    }
+
+    //sobrecarga
+    public loan MapToEntity(requestAllLoanDto loanDto) {
+        users usersEntity = new users();
+        usersEntity.setId_user(loanDto.getId_user());
+        return new loan(
+                loanDto.getId_loan(),
+                LocalDate.now(),
+                loanDto.getReturn_date(),
+                loanDto.getStatus(),
+                usersEntity,
+                null);
 
     }
 
     // Mapeo de Entidad a Dto
     public requestRegisterLoanDto MapToDto(loan entity) {
         return new requestRegisterLoanDto(
-            entity.getId_loan(),
-            entity.getLoan_date(),
-            entity.getReturn_date(),
-            entity.getStatus(),
-            entity.getUsers().getId_user()
-                );
+                entity.getId_loan(),
+                entity.getLoan_date(),
+                entity.getReturn_date(),
+                entity.getStatus(),
+                entity.getUsers().getId_user());
     }
 
     // Mapeao de entidad a lista de Dto
