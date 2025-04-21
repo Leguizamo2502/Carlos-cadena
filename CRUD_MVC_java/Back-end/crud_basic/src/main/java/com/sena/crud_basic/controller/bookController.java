@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sena.crud_basic.DTO.requestAllBookDto;
 import com.sena.crud_basic.DTO.requestRegisterBookDto;
 import com.sena.crud_basic.DTO.responseDto;
 import com.sena.crud_basic.services.bookService;
@@ -21,43 +22,53 @@ import com.sena.crud_basic.services.bookService;
 public class bookController {
     @Autowired
     private bookService _bookService;
-    //Obtener todo
+
+    // Obtener todo
     @GetMapping("/")
-    public ResponseEntity<Object> findAllbook(){
+    public ResponseEntity<Object> findAllbook() {
         var Listbook = _bookService.findAllbook();
-        return new ResponseEntity<Object>(Listbook,HttpStatus.OK);
+        return new ResponseEntity<Object>(Listbook, HttpStatus.OK);
     }
-    //Obtener por nombre
+
+    // TRaer con todo
+    @GetMapping("/todo")
+    public ResponseEntity<Object> findJoin() {
+        var Listbook = _bookService.getBooksWithAllRelations();
+        return new ResponseEntity<Object>(Listbook, HttpStatus.OK);
+    }
+
+    // Obtener por nombre
     @GetMapping("/filter/{name}")
-    public ResponseEntity<Object> findByNamebook(@PathVariable String name){
+    public ResponseEntity<Object> findByNamebook(@PathVariable String name) {
         var Listbook = _bookService.findByNamebook(name);
-        return new ResponseEntity<Object>(Listbook,HttpStatus.OK);
+        return new ResponseEntity<>(Listbook, HttpStatus.OK);
     }
 
-    //Obtener por id
+    // Obtener por id
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findByIdbook(@PathVariable int id){
+    public ResponseEntity<Object> findByIdbook(@PathVariable int id) {
         var book = _bookService.findbookById(id);
-        return new ResponseEntity<>(book,HttpStatus.OK);
+        return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
-    //Guardar
+    // Guardar
     @PostMapping("/")
-    public ResponseEntity<responseDto> savebook(@RequestBody requestRegisterBookDto bookDto) {
-       responseDto response = _bookService.savebook(bookDto);
-        return new ResponseEntity<>(response,response.getStatus());
+    public ResponseEntity<responseDto> savebook(@RequestBody requestAllBookDto bookDto) {
+        responseDto response = _bookService.savebook(bookDto);
+        return new ResponseEntity<>(response, response.getStatus());
     }
 
-    //Actualizar
+    // Actualizar
     @PutMapping("/")
     public ResponseEntity<responseDto> updatebook(@RequestBody requestRegisterBookDto book) {
         responseDto response = _bookService.updatebook(book);
-        return new ResponseEntity<>(response,response.getStatus());
+        return new ResponseEntity<>(response, response.getStatus());
     }
-    //Borrar
+
+    // Borrar
     @DeleteMapping("/{id}")
     public ResponseEntity<responseDto> deletebook(@PathVariable int id) {
-       responseDto response =  _bookService.deletebook(id);
-        return new ResponseEntity<>(response,response.getStatus());
+        responseDto response = _bookService.deletebook(id);
+        return new ResponseEntity<>(response, response.getStatus());
     }
 }

@@ -1,9 +1,7 @@
 package com.sena.crud_basic.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sena.crud_basic.DTO.requestRegisterBookAuthorDto;
 import com.sena.crud_basic.DTO.responseDto;
-import com.sena.crud_basic.model.book_author;
 import com.sena.crud_basic.services.bookAuthorService;
 
 @RestController
@@ -27,34 +24,32 @@ public class bookAuthorController {
     private bookAuthorService _bookAuthorService;
 
     @GetMapping("/")
-    public ResponseEntity<List<book_author>> getAll() {
-        return ResponseEntity.ok(_bookAuthorService.findAll());
+    public ResponseEntity<Object> getAll() {
+        var Listbookauthor = _bookAuthorService.findAllbookauthor();
+        return new ResponseEntity<Object>(Listbookauthor, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
-        Optional<book_author> result = _bookAuthorService.findById(id);
-        if (result.isPresent()) {
-            return ResponseEntity.ok(result.get());
-        } else {
-            return ResponseEntity.status(404).body("No se encontró la relación con ID: " + id);
-        }
+        var Listbookauthor = _bookAuthorService.findbookauthorById(id);
+        return new ResponseEntity<Object>(Listbookauthor, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<responseDto> create(@RequestBody requestRegisterBookAuthorDto dto) {
-        responseDto response = _bookAuthorService.save(dto);
-        return ResponseEntity.status(response.getStatus()).body(response);
+        responseDto response = _bookAuthorService.savebookauthor(dto);
+        return new ResponseEntity<>(response,response.getStatus());
     }
     @PutMapping("/")
     public ResponseEntity<responseDto> update(@RequestBody requestRegisterBookAuthorDto dto) {
-        responseDto response = _bookAuthorService.update(dto);
-        return ResponseEntity.status(response.getStatus()).body(response);
+        responseDto response = _bookAuthorService.updatebookauthor(dto);
+        return new ResponseEntity<>(response,response.getStatus());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<responseDto> delete(@PathVariable int id) {
-        return ResponseEntity.status(_bookAuthorService.delete(id).getStatus()).body(_bookAuthorService.delete(id));
+        responseDto response = _bookAuthorService.deletebookauthor(id);
+        return new ResponseEntity<>(response,response.getStatus());
     }
 
 

@@ -2,8 +2,6 @@ package com.sena.crud_basic.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -65,6 +63,10 @@ public class usersService {
 
     // Guardar categoria
     public responseDto saveusers(requestRegisterUsersDto usersDto) {
+        // Validar que el id no exista
+        if (_usersData.findById(usersDto.getId_user()).isPresent()){
+            return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
+        }
         try {
             _usersData.save(MapToEntity(usersDto));
             return createResponse(HttpStatus.CREATED, "Se creo correctamenete");

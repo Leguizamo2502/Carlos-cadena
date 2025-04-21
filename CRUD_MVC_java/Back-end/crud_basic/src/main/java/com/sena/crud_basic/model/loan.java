@@ -29,7 +29,7 @@ public class loan {
 
     @ManyToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id_user")
-    @JsonIgnoreProperties({"loans"}) //aqui pa quitar cosas de user
+    // @JsonIgnoreProperties({"loans"}) //aqui pa quitar cosas de user
     private users users;
 
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, orphanRemoval = true)

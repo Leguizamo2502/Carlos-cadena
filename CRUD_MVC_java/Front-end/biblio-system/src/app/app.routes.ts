@@ -3,6 +3,7 @@ import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { ManageBooksComponent } from './views/manage-books/manage-books.component';
 import { RegisterLoanComponent } from './views/register-loan/register-loan.component';
 import { RegisterUserComponent } from './views/register-user/register-user.component';
+import { UpdateUserComponent } from './components/update-user/update-user.component';
 
 export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -10,4 +11,5 @@ export const routes: Routes = [
   { path: 'register-user', component: RegisterUserComponent },
   { path: 'manage-books', component: ManageBooksComponent },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  {path: "register-user/update-user", component: UpdateUserComponent}
 ];

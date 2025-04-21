@@ -1,107 +1,148 @@
 package com.sena.crud_basic.services;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.sena.crud_basic.DTO.requestRegisterBookCategoryDto;
 import com.sena.crud_basic.DTO.responseDto;
-import com.sena.crud_basic.interfaces.IBook;
 import com.sena.crud_basic.interfaces.IBookCategory;
-import com.sena.crud_basic.interfaces.ICategory;
 import com.sena.crud_basic.model.book;
 import com.sena.crud_basic.model.book_category;
 import com.sena.crud_basic.model.category;
-import com.sena.crud_basic.model.category;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class bookCategoryService {
     @Autowired
     private IBookCategory _bookCategoryData;
-
-    @Autowired
-    private IBook _bookData;
-
-    @Autowired
-    private ICategory _categoryData;
-
-    public List<book_category> findAll() {
-        return _bookCategoryData.findAll();
-    }
-
-    public Optional<book_category> findById(int id) {
-        return _bookCategoryData.findById(id);
-    }
-
-    public responseDto save(requestRegisterBookCategoryDto dto) {
+// Obteber todo
+    public List<requestRegisterBookCategoryDto> findAllbookcategory() {
         try {
-            Optional<book> book  = _bookData.findById(dto.getId_book());
-            Optional<category> category = _categoryData.findById(dto.getId_category());
+            var bookcategorys = _bookCategoryData.findAll();
+            return MapToList(bookcategorys);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al traer todos bookcategory" + e);
+        }
+    }
 
-            if (book.isPresent() && category.isPresent()) {
-                book_category book_category = new book_category();
-                book_category.setBook(book.get());
-                book_category.setCategory(category.get());
+    // // Obtener por nombre
+    // public List<bookcategory> findByNamebookcategory(String name) {
+    //     return _bookCategoryData.findByName(name);
+    // }
 
-                _bookCategoryData.save(book_category);
-                return createResponse(HttpStatus.CREATED, "Relación book_category creada correctamente");
-            } else {
-                return createResponse(HttpStatus.NOT_FOUND, "Book o category no encontrado");
-                
+    // Obteber por id
+    public requestRegisterBookCategoryDto findbookcategoryById(int id) {
+        try {
+            // Buscar por su ID
+            var bookcategory = _bookCategoryData.findById(id);
+
+            // Si no se encuentraa, lanzamos una excepción
+            if (!bookcategory.isPresent()) {
+                throw new EntityNotFoundException("bookcategory not found with ID: " + id);
             }
+
+            // Si se encuentra, la mapeamos a DTO y la retornamos
+            return MapToDto(bookcategory.get());
+
+        } catch (EntityNotFoundException e) {
+            // Excepción específica si no se encuentra 
+            throw e; // Aquí puedes decidir si quieres loguear la excepción o no
+        } catch (Exception e) {
+            // Cualquier otro error, como acceso a datos
+            throw new RuntimeException("Error occurred while fetching bookcategory with ID: " + id, e);
+        }
+    }
+
+    // Guardar categoria
+    public responseDto savebookcategory(requestRegisterBookCategoryDto bookcategoryDto) {
+        if (_bookCategoryData.findById(bookcategoryDto.getId_book_category()).isPresent()) {
+            return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
+        }
+        try {
+            _bookCategoryData.save(MapToEntity(bookcategoryDto));
+            return createResponse(HttpStatus.CREATED, "Se creo correctamenete");
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear" + e.getMessage());
+        }
+    }
+
+    // Actualizar categoria
+    public responseDto updatebookcategory(requestRegisterBookCategoryDto bookcategoryDto) {
+        try {
+            if (bookcategoryDto.getId_book_category() <= 0) {
+                return createResponse(HttpStatus.BAD_REQUEST, "ID inválido");
+            }
+
+            // Verificar existencia
+            var existing = _bookCategoryData.findById(bookcategoryDto.getId_book_category());
+            if (!existing.isPresent()) {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
+            }
+
+            // Mapeo actualizado y guardado
+            var updatedbookcategory = MapToEntity(bookcategoryDto);
+            _bookCategoryData.save(updatedbookcategory);
+            return createResponse(HttpStatus.OK, "Actualización exitosa");
 
         } catch (Exception e) {
-            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al guardar: " + e.getMessage());
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar: " + e.getMessage());
         }
     }
 
-    // Update
-    public responseDto update(requestRegisterBookCategoryDto dto) {
-        if (dto.getId_book_category() <= 0) {
-            return createResponse(HttpStatus.BAD_REQUEST, "ID inválido para la actualización");
-        }
-        Optional<book_category> existing = _bookCategoryData.findById(dto.getId_book_category());
-        if (existing.isPresent()) {
-            try {
-                Optional<book> bookOpt = _bookData.findById(dto.getId_book());
-                Optional<category> categoryOpt = _categoryData.findById(dto.getId_category());
 
-                if (bookOpt.isPresent() && categoryOpt.isPresent()) {
-                    book_category bp = existing.get();
-                    bp.setBook(bookOpt.get());
-                    bp.setCategory(categoryOpt.get());
-
-                    _bookCategoryData.save(bp);
-                    return createResponse(HttpStatus.OK, "Relación book_category actualizada correctamente");
-                } else {
-                    return createResponse(HttpStatus.NOT_FOUND, "Book o category no encontrado");
-                }
-            } catch (Exception e) {
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar: " + e.getMessage());
-            }
-        }
-        return createResponse(HttpStatus.NOT_FOUND,
-                "Relación book_category no encontrada con ID: " + dto.getId_book_category());
-    }
-
-    public responseDto delete(int id) {
-        var result = findById(id);
-        if (result.isPresent()) {
-            try {
+    public responseDto deletebookcategory(int id) {
+        try {
+            var bookcategory = _bookCategoryData.findById(id);
+            if (bookcategory.isPresent()) {
                 _bookCategoryData.deleteById(id);
-                return createResponse(HttpStatus.OK, "Eliminado correctamente");
-            } catch (Exception e) {
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar: " + e.getMessage());
+                return createResponse(HttpStatus.OK, "Se borró correctamente");
+            } else {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
             }
-        } else {
-            return createResponse(HttpStatus.NOT_FOUND, "No se encontró la relación con ID: " + id);
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar: " + e.getMessage());
         }
     }
 
-    private responseDto createResponse(HttpStatus status, String message) {
+    // Mapeo de Dto a modelo 
+    public book_category MapToEntity(requestRegisterBookCategoryDto dto) {
+        book bookEntity = new book();
+        bookEntity.setId_book(dto.getId_book());
+    
+        category categoryEntity = new category();
+        categoryEntity.setId_category(dto.getId_category());
+    
+        return new book_category(
+            dto.getId_book_category(), // usa el ID recibido por si es actualización
+            categoryEntity,
+            bookEntity
+        );
+    }
+    
+
+    // Mapeo de Entidad a Dto
+    public requestRegisterBookCategoryDto MapToDto(book_category entity) {
+        return new requestRegisterBookCategoryDto(
+                entity.getId_book_category(),
+                entity.getBook().getId_book(),
+                entity.getCategory().getId_category()
+        );
+    }
+
+    // Mapeao de entidad a lista de Dto
+    public List<requestRegisterBookCategoryDto> MapToList(List<book_category> entities) {
+        List<requestRegisterBookCategoryDto> dtos = new ArrayList<>();
+        for (book_category entity : entities) {
+            dtos.add(MapToDto(entity));
+        }
+        return dtos;
+    }
+
+    // Response
+    public responseDto createResponse(HttpStatus status, String message) {
         responseDto response = new responseDto();
         response.setStatus(status);
         response.setMessage(message);

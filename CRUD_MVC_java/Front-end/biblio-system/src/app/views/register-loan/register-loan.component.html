@@ -1,1 +1,30 @@
-<p>register-loan works!</p>
+<div class="card-container">
+    <app-top-cards *ngFor="let stat of stats" [title]="stat.title" [value]="stat.value" [icon]="stat.icon"
+        [isImage]="stat.isImage"></app-top-cards>
+</div>
+
+
+<app-form-loan></app-form-loan>
+
+<table mat-table [dataSource]="loan" class="mat-elevation-z8">
+  
+    
+  
+    <ng-container matColumnDef="fullName">
+      <th mat-header-cell *matHeaderCellDef> Nombre Completo </th>
+      <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="bookTitle">
+      <th mat-header-cell *matHeaderCellDef> Libro(s) </th>
+      <td mat-cell *matCellDef="let element"> {{element.bookTitle}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="quantity">
+      <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+      <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

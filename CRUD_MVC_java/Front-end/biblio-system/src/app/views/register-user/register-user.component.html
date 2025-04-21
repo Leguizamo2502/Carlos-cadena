@@ -1,3 +1,69 @@
-@for (user of user; track $index) {
-    <p>{{user.first_name}}</p>
-}
+<div class="card-container">
+    <app-top-cards *ngFor="let stat of stats" [title]="stat.title" [value]="stat.value" [icon]="stat.icon"
+        [isImage]="stat.isImage"></app-top-cards>
+</div>
+
+<!-- Formulario crear -->
+<form (submit)="guardar()" [formGroup]="form">
+    <div class="info-field">
+        <div class="info-label">Nombre:</div>
+        <input type="text" [formControl]="form.controls.first_name"
+        matInput required>
+    </div>
+    <div class="info-field">
+        <div class="info-label">Apellido:</div>
+        <input type="text" [formControl]="form.controls.last_name"
+        matInput required>
+    </div>
+    <div class="info-field">
+        <div class="info-label">Identificacion:</div>
+        <input type="text" [formControl]="form.controls.identification"
+        matInput required>
+    </div>
+    <div class="info-field">
+        <div class="info-label">Email:</div>
+        <input type="email" [formControl]="form.controls.email"
+        matInput required>
+    </div>
+    <div class="action-buttons">
+        <button class="btn btn-primary" type="submit" mat-flat-button>Guardar</button>
+        <a class="btn btn-secondary" mat-stroked-button routerLink="/register-user">Cancelar</a>
+    </div>
+
+
+</form>
+
+
+
+<table mat-table [dataSource]="user" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="Nombre">
+        <th mat-header-cell *matHeaderCellDef> Nombre </th>
+        <td mat-cell *matCellDef="let element"> {{element.first_name +' '+element.last_name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Identificacion">
+        <th mat-header-cell *matHeaderCellDef> Identificación </th>
+        <td mat-cell *matCellDef="let element"> {{element.identification}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <td mat-cell *matCellDef="let element">
+            <!-- <button mat-button color="primary" (click)="actualizar(element)">Actualizar</button> -->
+            <button mat-button color="primary" routerLink="update-user">Actualizar</button> 
+            <button mat-button color="warn" (click)="deleteUser(element.id_user)">Borrar</button>
+             
+            <!-- <button mat-button color="warn">Borrar</button>  -->
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+</table>

@@ -1,9 +1,7 @@
 package com.sena.crud_basic.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sena.crud_basic.DTO.requestRegisterLoanDetailDto;
 import com.sena.crud_basic.DTO.responseDto;
-import com.sena.crud_basic.model.loan_detail;
-
 import com.sena.crud_basic.services.loanDetailService;
 
 @RestController
@@ -27,33 +23,31 @@ public class loanDetailController {
     private loanDetailService _loanDetail;
 
     @GetMapping("/")
-    public ResponseEntity<List<loan_detail>> getAll() {
-        return ResponseEntity.ok(_loanDetail.findAll());
+    public ResponseEntity<Object> getAll() {
+        var ListloanDetail = _loanDetail.findAllloanDetail();
+        return new ResponseEntity<Object>(ListloanDetail, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
-        Optional<loan_detail> result = _loanDetail.findById(id);
-        if (result.isPresent()) {
-            return ResponseEntity.ok(result.get());
-        } else {
-            return ResponseEntity.status(404).body("No se encontró la relación con ID: " + id);
-        }
+        var ListloanDetail = _loanDetail.findloanDetailById(id);
+        return new ResponseEntity<Object>(ListloanDetail, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<responseDto> create(@RequestBody requestRegisterLoanDetailDto dto) {
-        responseDto response = _loanDetail.save(dto);
-        return ResponseEntity.status(response.getStatus()).body(response);
+        responseDto response = _loanDetail.saveloanDetail(dto);
+        return new ResponseEntity<>(response,response.getStatus());
     }
     @PutMapping("/")
     public ResponseEntity<responseDto> update(@RequestBody requestRegisterLoanDetailDto dto) {
-        responseDto response = _loanDetail.update(dto);
-        return ResponseEntity.status(response.getStatus()).body(response);
+        responseDto response = _loanDetail.updateloanDetail(dto);
+        return new ResponseEntity<>(response,response.getStatus());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<responseDto> delete(@PathVariable int id) {
-        return ResponseEntity.status(_loanDetail.delete(id).getStatus()).body(_loanDetail.delete(id));
+        responseDto response = _loanDetail.deleteloanDetail(id);
+        return new ResponseEntity<>(response,response.getStatus());
     }
 }

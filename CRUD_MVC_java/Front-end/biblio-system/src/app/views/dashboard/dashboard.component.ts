@@ -9,39 +9,36 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterModule,TopCardsComponent, CommonModule],
+  imports: [RouterModule, TopCardsComponent, CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent {
   bookService = inject(BookService);
-  book: book[] = [];
-
   userService = inject(UserService);
-  user:user[] = [];
-  
-  stats = [
-    { title: 'Total Libros', value: 0, icon: 'book', isImage: false },
-    { title: 'Usuarios Registrados', value: 0, icon: 'group', isImage: false },
-    { title: 'Préstamos Activos', value: 0, icon: 'assignment', isImage: false },
-  ];
+  book: book[] = [];
+  user: user[] = [];
+
+  // Inicializamos stats vacío y lo llenamos después
+  stats: { title: string; value: number; icon: string; isImage: boolean }[] = [];
 
   constructor() {
     this.bookService.getBook().subscribe((data) => {
       this.book = data;
-      this.updateStats(); // Actualiza el total de libros cuando los datos se cargan
+      this.updateStats(); // Actualiza libros
     });
 
-    this.userService.getUser().subscribe((data)=>{
+    this.userService.getUser().subscribe((data) => {
       this.user = data;
-      this.updateStats;
-    })
-
+      this.updateStats(); // Actualiza usuarios (¡corregido!)
+    });
   }
 
-  // Función que actualiza el valor de los stats
   updateStats() {
-    this.stats[0].value = this.book.length;
-    this.stats[1].value = this.user.length;
+    this.stats = [
+      { title: 'Total Libros', value: this.book.length, icon: 'book', isImage: false },
+      { title: 'Usuarios Registrados', value: this.user.length, icon: 'group', isImage: false },
+      { title: 'Préstamos Activos', value: 0, icon: 'assignment', isImage: false }, // Si no hay datos, se queda en 0
+    ];
   }
 }

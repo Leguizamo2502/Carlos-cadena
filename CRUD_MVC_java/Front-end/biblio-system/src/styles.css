@@ -12,6 +12,7 @@ body {
     display: flex;
     gap: 15px;
     flex-direction: row;
+    margin: 1rem;
 }
 
 .custom-sidenav-list .mat-list-item .mat-line {

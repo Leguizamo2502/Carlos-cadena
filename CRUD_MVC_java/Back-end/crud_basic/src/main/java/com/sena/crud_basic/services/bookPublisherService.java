@@ -2,21 +2,15 @@ package com.sena.crud_basic.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.sena.crud_basic.DTO.requestRegisterBookPublisherDto;
-import com.sena.crud_basic.DTO.requestRegisterBookPublisherDto;
 import com.sena.crud_basic.DTO.responseDto;
-import com.sena.crud_basic.interfaces.IBook;
 import com.sena.crud_basic.interfaces.IBookPublisher;
-import com.sena.crud_basic.interfaces.IPusblisher;
 import com.sena.crud_basic.model.book_publisher;
 import com.sena.crud_basic.model.book;
-import com.sena.crud_basic.model.book_publisher;
 import com.sena.crud_basic.model.publisher;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -67,7 +61,10 @@ public class bookPublisherService {
 
     // Guardar categoria
     public responseDto savebookPublisher(requestRegisterBookPublisherDto bookPublisherDto) {
-        
+        // Validar que el id no exista
+        if (_bookPublisherData.findById(bookPublisherDto.getId_book_publisher()).isPresent()) {
+            return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
+        }
         try {
             _bookPublisherData.save(MapToEntity(bookPublisherDto));
             return createResponse(HttpStatus.CREATED, "Se creo correctamenete");

@@ -63,10 +63,10 @@ public class authorService {
 
     // Guardar categoria
     public responseDto saveauthor(requestRegisterAuthorDto authorDto) {
-         // Validar que el id no exista
-         if (_authorData.findById(authorDto.getId_author()).isPresent()){
-            return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
-        }
+            // Validar que el id no exista
+            if (_authorData.findById(authorDto.getId_author()).isPresent()){
+                return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
+            }
         try {
             _authorData.save(MapToEntity(authorDto));
             return createResponse(HttpStatus.CREATED, "Se creo correctamenete");
@@ -118,7 +118,7 @@ public class authorService {
         return new author(
                 authorDto.getId_author(),
                 authorDto.getFirst_name(),
-                authorDto.getFirst_name(),
+                authorDto.getLast_name(),
                 null);
 
     }
@@ -129,6 +129,8 @@ public class authorService {
                 entity.getId_author(),
                 entity.getFirst_name(),
                 entity.getLast_name());
+                
+                
     }
 
     // Mapeao de entidad a lista de Dto

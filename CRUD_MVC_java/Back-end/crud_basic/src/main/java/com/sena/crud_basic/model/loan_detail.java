@@ -27,11 +27,11 @@ public class loan_detail {
     // private book book;
     @ManyToOne
     @JoinColumn(name = "id_loan", referencedColumnName = "id_loan")
-    @JsonIgnoreProperties({"loan_detail", "users"})
+    // @JsonIgnoreProperties({"loan_detail", "users"})
     private loan loan;
     @ManyToOne
     @JoinColumn(name = "id_book", referencedColumnName = "id_book")
-    @JsonIgnoreProperties({"loan_detail","book_publisher","description","book_author", "book_category", "loans"})
+    // @JsonIgnoreProperties({"loan_detail","book_publisher","description","book_author", "book_category", "loans"})
     private book book;
     public loan_detail() {
     }

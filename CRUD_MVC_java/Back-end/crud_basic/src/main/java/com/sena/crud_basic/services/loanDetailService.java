@@ -1,109 +1,152 @@
 package com.sena.crud_basic.services;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.sena.crud_basic.DTO.requestRegisterLoanDetailDto;
 import com.sena.crud_basic.DTO.responseDto;
-import com.sena.crud_basic.interfaces.IBook;
-import com.sena.crud_basic.interfaces.ILoan;
 import com.sena.crud_basic.interfaces.ILoanDetail;
 import com.sena.crud_basic.model.book;
 import com.sena.crud_basic.model.loan_detail;
-import com.sena.crud_basic.model.loan_detail;
 import com.sena.crud_basic.model.loan;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class loanDetailService {
     @Autowired
     private ILoanDetail _loanDetailData;
 
-    @Autowired
-    private ILoan _loanData;
-
-    @Autowired
-    private IBook _bookData;
-
-    public List<loan_detail> findAll() {
-        return _loanDetailData.findAll();
-    }
-
-    public Optional<loan_detail> findById(int id) {
-        return _loanDetailData.findById(id);
-    }
-
-    public responseDto save(requestRegisterLoanDetailDto dto) {
+    // Obteber todo
+    public List<requestRegisterLoanDetailDto> findAllloanDetail() {
         try {
-            Optional<book> book  = _bookData.findById(dto.getId_book());
-            Optional<loan> loan = _loanData.findById(dto.getId_loan());
+            var loanDetails = _loanDetailData.findAll();
+            return MapToList(loanDetails);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al traer todos loanDetail" + e);
+        }
+    }
 
-            if (book.isPresent() && loan.isPresent()) {
-                loan_detail loan_detail = new loan_detail();
-                loan_detail.setBook(book.get());
-                loan_detail.setLoan(loan.get());
-                loan_detail.setQuantity(dto.getQuantity());
+    // // Obtener por nombre
+    // public List<loanDetail> findByNameloanDetail(String name) {
+    //     return _loanDetailData.findByName(name);
+    // }
 
-                _loanDetailData.save(loan_detail);
-                return createResponse(HttpStatus.CREATED, "Relación loan_detail creada correctamente");
-            } else {
-                return createResponse(HttpStatus.NOT_FOUND, "Book o loan no encontrado");
-                
+    // Obteber por id
+    public requestRegisterLoanDetailDto findloanDetailById(int id) {
+        try {
+            // Buscar por su ID
+            var loanDetail = _loanDetailData.findById(id);
+
+            // Si no se encuentraa, lanzamos una excepción
+            if (!loanDetail.isPresent()) {
+                throw new EntityNotFoundException("loanDetail not found with ID: " + id);
             }
+
+            // Si se encuentra, la mapeamos a DTO y la retornamos
+            return MapToDto(loanDetail.get());
+
+        } catch (EntityNotFoundException e) {
+            // Excepción específica si no se encuentra 
+            throw e; // Aquí puedes decidir si quieres loguear la excepción o no
+        } catch (Exception e) {
+            // Cualquier otro error, como acceso a datos
+            throw new RuntimeException("Error occurred while fetching loanDetail with ID: " + id, e);
+        }
+    }
+
+    // Guardar categoria
+    public responseDto saveloanDetail(requestRegisterLoanDetailDto loanDetailDto) {
+        if (_loanDetailData.findById(loanDetailDto.getId_loan_detail()).isPresent()) {
+            return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
+        }
+        try {
+            _loanDetailData.save(MapToEntity(loanDetailDto));
+            return createResponse(HttpStatus.CREATED, "Se creo correctamenete");
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear" + e.getMessage());
+        }
+    }
+
+    // Actualizar categoria
+    public responseDto updateloanDetail(requestRegisterLoanDetailDto loanDetailDto) {
+        try {
+            if (loanDetailDto.getId_loan_detail() <= 0) {
+                return createResponse(HttpStatus.BAD_REQUEST, "ID inválido");
+            }
+
+            // Verificar existencia
+            var existing = _loanDetailData.findById(loanDetailDto.getId_loan_detail());
+            if (!existing.isPresent()) {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
+            }
+
+            // Mapeo actualizado y guardado
+            var updatedloanDetail = MapToEntity(loanDetailDto);
+            _loanDetailData.save(updatedloanDetail);
+            return createResponse(HttpStatus.OK, "Actualización exitosa");
 
         } catch (Exception e) {
-            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al guardar: " + e.getMessage());
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar: " + e.getMessage());
         }
     }
 
-    // Update
-    public responseDto update(requestRegisterLoanDetailDto dto) {
-        if (dto.getId_loan_detail() <= 0) {
-            return createResponse(HttpStatus.BAD_REQUEST, "ID inválido para la actualización");
-        }
-        Optional<loan_detail> existing = _loanDetailData.findById(dto.getId_loan_detail());
-        if (existing.isPresent()) {
-            try {
-                Optional<book> bookOpt = _bookData.findById(dto.getId_book());
-                Optional<loan> loanOpt = _loanData.findById(dto.getId_loan());
 
-                if (bookOpt.isPresent() && loanOpt.isPresent()) {
-                    loan_detail bp = existing.get();
-                    bp.setBook(bookOpt.get());
-                    bp.setLoan(loanOpt.get());
-                    bp.setQuantity(dto.getQuantity());
-
-                    _loanDetailData.save(bp);
-                    return createResponse(HttpStatus.OK, "Relación loan_detail actualizada correctamente");
-                } else {
-                    return createResponse(HttpStatus.NOT_FOUND, "Book o loan no encontrado");
-                }
-            } catch (Exception e) {
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar: " + e.getMessage());
-            }
-        }
-        return createResponse(HttpStatus.NOT_FOUND,
-                "Relación loan_detail no encontrada con ID: " + dto.getId_loan_detail());
-    }
-
-    public responseDto delete(int id) {
-        var result = findById(id);
-        if (result.isPresent()) {
-            try {
+    public responseDto deleteloanDetail(int id) {
+        try {
+            var loanDetail = _loanDetailData.findById(id);
+            if (loanDetail.isPresent()) {
                 _loanDetailData.deleteById(id);
-                return createResponse(HttpStatus.OK, "Eliminado correctamente");
-            } catch (Exception e) {
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar: " + e.getMessage());
+                return createResponse(HttpStatus.OK, "Se borró correctamente");
+            } else {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
             }
-        } else {
-            return createResponse(HttpStatus.NOT_FOUND, "No se encontró la relación con ID: " + id);
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar: " + e.getMessage());
         }
     }
 
-    private responseDto createResponse(HttpStatus status, String message) {
+    // Mapeo de Dto a modelo 
+    public loan_detail MapToEntity(requestRegisterLoanDetailDto dto) {
+        book bookEntity = new book();
+        bookEntity.setId_book(dto.getId_book());
+    
+        loan loanEntity = new loan();
+        loanEntity.setId_loan(dto.getId_loan());
+    
+        return new loan_detail(
+            dto.getId_loan_detail(), 
+            dto.getQuantity(),
+            loanEntity,
+            bookEntity
+        );
+    }
+    
+
+    // Mapeo de Entidad a Dto
+    public requestRegisterLoanDetailDto MapToDto(loan_detail entity) {
+        return new requestRegisterLoanDetailDto(
+                entity.getId_loan_detail(),
+                entity.getQuantity(),
+                entity.getLoan().getId_loan(),
+                entity.getBook().getId_book()
+                
+        );
+    }
+
+    // Mapeao de entidad a lista de Dto
+    public List<requestRegisterLoanDetailDto> MapToList(List<loan_detail> entities) {
+        List<requestRegisterLoanDetailDto> dtos = new ArrayList<>();
+        for (loan_detail entity : entities) {
+            dtos.add(MapToDto(entity));
+        }
+        return dtos;
+    }
+
+    // Response
+    public responseDto createResponse(HttpStatus status, String message) {
         responseDto response = new responseDto();
         response.setStatus(status);
         response.setMessage(message);

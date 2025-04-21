@@ -1,0 +1,10 @@
+<div class="container">
+    <input type="text" [(ngModel)]="searchName" placeholder="Buscar por nombre de libro">
+    <button (click)="searchBooks()">Buscar</button>
+
+    <ul>
+        <li *ngFor="let book of books">
+            {{ book }}
+        </li>
+    </ul>
+</div>

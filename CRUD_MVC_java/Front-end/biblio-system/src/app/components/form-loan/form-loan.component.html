@@ -1,0 +1,51 @@
+<form (submit)="guardar()" [formGroup]="form">
+    
+    <div class="info-field">
+        <div class="info-label">Fecha Prestamo:</div>
+        <div id="creation-date">{{ form.get('loan_date')?.value | date:'yyyy-MM-dd' }}</div>
+    </div>
+
+    <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Fecha de Devolución</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="return_date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Estado del préstamo</mat-label>
+        <mat-select formControlName="status">
+            <mat-option value="Pendiente">Pendiente</mat-option>
+            <mat-option value="Devuelto">Devuelto</mat-option>
+            <mat-option value="Atrasado">Atrasado</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Seleccionar Usuario</mat-label>
+        <mat-select formControlName="id_user" required>
+            <mat-option *ngFor="let user of users" [value]="user.id_user">
+                {{ user.first_name +' '+user.last_name }} 
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('id_user')?.invalid">Seleccione un usuario</mat-error>
+    </mat-form-field>
+
+    <!-- Select para Libros -->
+    <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Seleccionar Libro</mat-label>
+        <mat-select formControlName="id_book" required>
+            <mat-option *ngFor="let book of books" [value]="book.id_book">
+                {{ book.title }}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('id_book')?.invalid">Seleccione un libro</mat-error>
+    </mat-form-field>
+
+    <div class="action-buttons">
+        <button class="btn btn-primary" type="submit" mat-flat-button>Guardar</button>
+        <a class="btn btn-secondary" mat-stroked-button routerLink="/manage-books">Cancelar</a>
+    </div>
+    
+    
+</form>

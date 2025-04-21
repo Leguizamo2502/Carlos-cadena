@@ -1,0 +1,65 @@
+package com.sena.crud_basic.DTO;
+
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class requestAllLoanDto {
+    private int id_loan;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate loan_date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate return_date;
+    private String status; 
+    private int id_user;
+    private int id_book;
+    public requestAllLoanDto() {
+    }
+    public requestAllLoanDto(int id_loan, LocalDate loan_date, LocalDate return_date, String status, int id_user,
+            int id_book) {
+        this.id_loan = id_loan;
+        this.loan_date = loan_date;
+        this.return_date = return_date;
+        this.status = status;
+        this.id_user = id_user;
+        this.id_book = id_book;
+    }
+    public int getId_loan() {
+        return id_loan;
+    }
+    public void setId_loan(int id_loan) {
+        this.id_loan = id_loan;
+    }
+    public LocalDate getLoan_date() {
+        return loan_date;
+    }
+    public void setLoan_date(LocalDate loan_date) {
+        this.loan_date = loan_date;
+    }
+    public LocalDate getReturn_date() {
+        return return_date;
+    }
+    public void setReturn_date(LocalDate return_date) {
+        this.return_date = return_date;
+    }
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public int getId_user() {
+        return id_user;
+    }
+    public void setId_user(int id_user) {
+        this.id_user = id_user;
+    }
+    public int getId_book() {
+        return id_book;
+    }
+    public void setId_book(int id_book) {
+        this.id_book = id_book;
+    }
+    
+    
+}

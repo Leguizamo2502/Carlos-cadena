@@ -25,7 +25,14 @@ public class loanController {
     //Obtener todo
     @GetMapping("/")
     public ResponseEntity<Object> findAllloan(){
-        var Listloan = _loanService.findAllLoan();
+        var Listloan = _loanService.findAllloan();
+        return new ResponseEntity<Object>(Listloan,HttpStatus.OK);
+    }
+
+    //Obtener por join
+    @GetMapping("/todo")
+    public ResponseEntity<Object> findAllJoin(){
+        var Listloan = _loanService.findAllJoin();
         return new ResponseEntity<Object>(Listloan,HttpStatus.OK);
     }
     //Obtener por nombre
@@ -38,27 +45,27 @@ public class loanController {
     //Obtener por id
     @GetMapping("/{id}")
     public ResponseEntity<Object> findByIdloan(@PathVariable int id){
-        var loan = _loanService.findByIdLoan(id);
+        var loan = _loanService.findloanById(id);
         return new ResponseEntity<>(loan,HttpStatus.OK);
     }
 
     //Guardar
     @PostMapping("/")
     public ResponseEntity<responseDto> saveloan(@RequestBody requestRegisterLoanDto loanDto) {
-       responseDto response = _loanService.saveLoan(loanDto);
+       responseDto response = _loanService.saveloan(loanDto);
         return new ResponseEntity<>(response,response.getStatus());
     }
 
     //Actualizar
     @PutMapping("/")
     public ResponseEntity<responseDto> updateloan(@RequestBody requestRegisterLoanDto loan) {
-        responseDto response = _loanService.updateLoan(loan);
+        responseDto response = _loanService.updateloan(loan);
         return new ResponseEntity<>(response,response.getStatus());
     }
     //Borrar
     @DeleteMapping("/{id}")
     public ResponseEntity<responseDto> deleteloan(@PathVariable int id) {
-       responseDto response =  _loanService.deleteLoan(id);
+       responseDto response =  _loanService.deleteloan(id);
         return new ResponseEntity<>(response,response.getStatus());
     }
 

@@ -1,18 +1,24 @@
 package com.sena.crud_basic.services;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.sena.crud_basic.DTO.requestAllLoanDto;
 import com.sena.crud_basic.DTO.requestRegisterLoanDto;
 import com.sena.crud_basic.DTO.responseDto;
+import com.sena.crud_basic.DTO.responseLoanDto;
+import com.sena.crud_basic.interfaces.IBook;
 import com.sena.crud_basic.interfaces.ILoan;
+import com.sena.crud_basic.interfaces.ILoanDetail;
 import com.sena.crud_basic.interfaces.IUsers;
 import com.sena.crud_basic.model.loan;
 import com.sena.crud_basic.model.users;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class loanService {
@@ -22,96 +28,149 @@ public class loanService {
     @Autowired
     private IUsers _userData;
 
-    // obtener
-    public List<loan> findAllLoan() {
-        return _loanData.findAll();
-    }
+    @Autowired
+    private IBook _bookData;
 
-    // obtener por id
-    public Optional<loan> findByIdLoan(int id) {
-        return _loanData.findById(id);
-    }
+    @Autowired
+    private ILoanDetail _loanDetail;
 
-    // guardar
-    public responseDto saveLoan(requestRegisterLoanDto dto) {
-
+    // Obteber todo
+    public List<requestRegisterLoanDto> findAllloan() {
         try {
-            Optional<users> users = _userData.findById(dto.getId_user());
-
-            if (users.isPresent()) {
-                loan loan = new loan();
-                loan.setLoan_date(dto.getLoan_date());
-                loan.setReturn_date(dto.getReturn_date());
-                loan.setStatus(dto.getStatus());
-                loan.setUsers(users.get());
-
-                _loanData.save(loan);
-                return createResponse(HttpStatus.CREATED, "Prestamo creado correctamente");
-            }else{
-                return createResponse(HttpStatus.NOT_FOUND, "user para prestamo no encontrado");
-            }
-
-            
+            var loans = _loanData.findAll();
+            return MapToList(loans);
         } catch (Exception e) {
-            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al guardar el prestamo: " + e.getMessage());
+            throw new RuntimeException("Error al traer todos loan" + e);
         }
     }
 
-    // Actualizar
-    public responseDto updateLoan(requestRegisterLoanDto loanUpdate) {
-        if (loanUpdate.getId_user() <= 0) {
-            return createResponse(HttpStatus.BAD_REQUEST, "ID inválido para la actualización");
-        }
-        var loan = findByIdLoan(loanUpdate.getId_user());
-        if ((loan.isPresent())) {
-            try {
-                loan.get().setStatus(loanUpdate.getStatus());
-
-                _loanData.save(loan.get());
-                return createResponse(HttpStatus.OK, "Prestamo actualizado correctamente");
-            } catch (Exception e) {
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR,
-                        "Error al actualizar el prestamo: " + e.getMessage());
-            }
-        } else {
-            return createResponse(HttpStatus.NOT_FOUND,
-                    "Prestamo no encontrado con ID: " + loanUpdate.getId_loan());
-        }
+    //Obtern por join
+    public List<responseLoanDto> findAllJoin(){
+        return _loanData.findAllJoin();
     }
 
-    // Delete
-    public responseDto deleteLoan(int id) {
-        var loan = findByIdLoan(id);
-        if (loan.isPresent()) {
-            try {
-                _loanData.deleteById(id);
-                return createResponse(HttpStatus.OK, "Se elimino correctamente");
-            } catch (Exception e) {
-                return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar" + e.getMessage());
-            }
-        } else {
-            return createResponse(HttpStatus.NOT_FOUND, "No se encontro el id del prestamo");
-        }
-
-    }
-
-    // Mapeo
-    // public loan MapToEntity(requestRegisterLoanDto dto) {
-    //     Optional<users> users = _userData.findById(dto.getId_user());
-    //     var loan = new loan();
-
-    //     if (users.isPresent()) {
-    //         loan.setLoan_date(dto.getLoan_date());
-    //         loan.setReturn_date(dto.getReturn_date());
-    //         loan.setStatus(dto.getStatus());
-    //         loan.setUsers(users.get());
-    //         return loan;
-    //     }
-
+    // Obtener por nombre
+    // public List<loan> findByNameloan(String name) {
+    //     return _loanData.findByName(name);
     // }
 
+    // Obteber por id
+    public requestRegisterLoanDto findloanById(int id) {
+        try {
+            // Buscar por su ID
+            var loan = _loanData.findById(id);
+
+            // Si no se encuentraa, lanzamos una excepción
+            if (!loan.isPresent()) {
+                throw new EntityNotFoundException("loan not found with ID: " + id);
+            }
+
+            // Si se encuentra, la mapeamos a DTO y la retornamos
+            return MapToDto(loan.get());
+
+        } catch (EntityNotFoundException e) {
+            // Excepción específica si no se encuentra
+            throw e; // Aquí puedes decidir si quieres loguear la excepción o no
+        } catch (Exception e) {
+            // Cualquier otro error, como acceso a datos
+            throw new RuntimeException("Error occurred while fetching loan with ID: " + id, e);
+        }
+    }
+
+    // Guardar categoria
+    public responseDto saveloan(requestRegisterLoanDto loanDto) {
+        // Validar que el id no exista
+        if (_loanData.findById(loanDto.getId_loan()).isPresent()) {
+            return createResponse(HttpStatus.BAD_REQUEST, "El id ya existe");
+        }
+        try {
+            _loanData.save(MapToEntity(loanDto));
+            return createResponse(HttpStatus.CREATED, "Se creo correctamenete");
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al crear" + e.getMessage());
+        }
+    }
+
+    //Guardar relaciones
+    public void saveRelation(loan loan, requestAllLoanDto dto){
+        //guardar libro
+        
+    }
+
+    // Actualizar categoria
+    public responseDto updateloan(requestRegisterLoanDto loanDto) {
+        try {
+            if (loanDto.getId_loan() <= 0) {
+                return createResponse(HttpStatus.BAD_REQUEST, "ID inválido");
+            }
+
+            // Verificar existencia
+            var existing = _loanData.findById(loanDto.getId_loan());
+            if (!existing.isPresent()) {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
+            }
+
+            // Mapeo actualizado y guardado
+            var updatedloan = MapToEntity(loanDto);
+            _loanData.save(updatedloan);
+            return createResponse(HttpStatus.OK, "Actualización exitosa");
+
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar: " + e.getMessage());
+        }
+    }
+
+    public responseDto deleteloan(int id) {
+        try {
+            var loan = _loanData.findById(id);
+            if (loan.isPresent()) {
+                _loanData.deleteById(id);
+                return createResponse(HttpStatus.OK, "Se borró correctamente");
+            } else {
+                return createResponse(HttpStatus.NOT_FOUND, "No se encontró el ID");
+            }
+        } catch (Exception e) {
+            return createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar: " + e.getMessage());
+        }
+    }
+
+    // Mapeo de Dto a modelo
+    public loan MapToEntity(requestRegisterLoanDto loanDto) {
+        users usersEntity = new users();
+        usersEntity.setId_user(loanDto.getId_user());
+        return new loan(
+            loanDto.getId_loan(),
+            LocalDate.now(),
+            loanDto.getReturn_date(),
+            loanDto.getStatus(),
+            usersEntity,
+            null
+            );
+
+    }
+
+    // Mapeo de Entidad a Dto
+    public requestRegisterLoanDto MapToDto(loan entity) {
+        return new requestRegisterLoanDto(
+            entity.getId_loan(),
+            entity.getLoan_date(),
+            entity.getReturn_date(),
+            entity.getStatus(),
+            entity.getUsers().getId_user()
+                );
+    }
+
+    // Mapeao de entidad a lista de Dto
+    public List<requestRegisterLoanDto> MapToList(List<loan> entities) {
+        List<requestRegisterLoanDto> dtos = new ArrayList<>();
+        for (loan entity : entities) {
+            dtos.add(MapToDto(entity));
+        }
+        return dtos;
+    }
+
     // Response
-    private responseDto createResponse(HttpStatus status, String message) {
+    public responseDto createResponse(HttpStatus status, String message) {
         responseDto response = new responseDto();
         response.setStatus(status);
         response.setMessage(message);

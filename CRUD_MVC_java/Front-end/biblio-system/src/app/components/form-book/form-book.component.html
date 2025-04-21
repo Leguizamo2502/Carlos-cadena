@@ -1,0 +1,79 @@
+<!-- @for (category of categorys; track $index) {
+    <p>{{category.name}}</p>
+} -->
+<div class="container">
+
+    <form (submit)="guardar()" [formGroup]="form">
+
+        <div class="info-field">
+            <div class="info-label">Titulo:</div>
+            <input type="text" [formControl]="form.controls.title" matInput required>
+        </div>
+        <div class="info-field">
+            <div class="info-label">Descripcion:</div>
+            <input type="text" [formControl]="form.controls.description" matInput required>
+        </div>
+
+        <div class="cont-check">
+            <section class="example-section">
+                <h6>Elije Categoria</h6>
+                <span class="example-list-section">
+                    <ul>
+                        <ng-container *ngFor="let category of categorys; let i = index">
+                            <li class="example-list-item">
+                                <mat-checkbox
+                                    [checked]="form.controls['id_category'].value.includes(category.id_category)"
+                                    (change)="onCategoryChange($event, category.id_category)">
+                                    {{category.name}}
+                                </mat-checkbox>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </span>
+            </section>
+
+            <section class="example-section">
+                <h6>Elije Editorial</h6>
+                <span class="example-list-section">
+                    <ul>
+                        <ng-container *ngFor="let publisher of publishers; let i = index">
+                            <li class="example-list-item">
+                                <mat-checkbox
+                                    [checked]="form.controls['id_publisher'].value.includes(publisher.id_publisher)"
+                                    (change)="onPublisherChange($event, publisher.id_publisher)">
+                                    {{publisher.name}}
+                                </mat-checkbox>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </span>
+            </section>
+
+            <section class="example-section">
+                <h6>Elije Autor</h6>
+                <span class="example-list-section">
+                    <ul>
+                        <ng-container *ngFor="let author of authors; let i = index">
+                            <li class="example-list-item">
+                                <mat-checkbox
+                                    [checked]="form.controls['id_author'].value.includes(author.id_author)"
+                                    (change)="onAuthorChange($event, author.id_author)">
+                                    {{author.first_name +' '+ author.last_name}}
+                                </mat-checkbox>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </span>
+            </section>
+
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" type="submit" mat-flat-button>Guardar</button>
+            <a class="btn btn-secondary" mat-stroked-button routerLink="/manage-books">Cancelar</a>
+        </div>
+
+    </form>
+
+
+</div>

@@ -14,12 +14,12 @@ public class book_publisher {
 
     @ManyToOne
     @JoinColumn(name = "id_publisher", referencedColumnName = "id_publisher")
-    @JsonIgnoreProperties({"book_publisher"})
+    // @JsonIgnoreProperties({"book_publisher"})
     private publisher publisher;
 
     @ManyToOne
     @JoinColumn(name = "id_book", referencedColumnName = "id_book")
-    @JsonIgnoreProperties({"book_publisher","description","book_author", "book_category", "loans" })
+    // @JsonIgnoreProperties({"book_publisher","description","book_author", "book_category", "loans" })
     private book book;
 
     public book_publisher() {
