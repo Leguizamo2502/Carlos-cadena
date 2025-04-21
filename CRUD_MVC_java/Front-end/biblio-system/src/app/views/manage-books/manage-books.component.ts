@@ -1,3 +1,4 @@
+import { category } from './../../models/category.model';
 import { Component, inject } from '@angular/core';
 import { BookService } from '../../services/book.service';
 import { book } from '../../models/book.model';
@@ -14,9 +15,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { FilterbookComponent } from '../../components/filterbook/filterbook.component';
 import { FormBookComponent } from '../../components/form-book/form-book.component';
 import { RouterLink } from '@angular/router';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { CategoryService } from '../../services/category.service';
 
 @Component({
   selector: 'app-manage-books',
@@ -30,10 +33,11 @@ import { RouterLink } from '@angular/router';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    FilterbookComponent,
     FormBookComponent,
     FormBookComponent,
-    RouterLink
+    RouterLink,
+    MatSelectModule,
+    MatOptionModule
   ],
   templateUrl: './manage-books.component.html',
   styleUrl: './manage-books.component.css',
@@ -41,6 +45,9 @@ import { RouterLink } from '@angular/router';
 export class ManageBooksComponent {
   bookService = inject(BookService);
   book: book[] = [];
+
+  categoryService = inject(CategoryService);
+  categorys:category[] = [];
 
   stats: { title: string; value: number; icon: string; isImage: boolean }[] =
     [];
@@ -54,7 +61,14 @@ export class ManageBooksComponent {
   ];
 
   constructor() {
+    this.loadCategory();
     this.loadBooks();
+  }
+
+  loadCategory(){
+    this.categoryService.getCategory().subscribe((data)=>{
+      this.categorys = data;
+    })
   }
 
   loadBooks() {
@@ -87,6 +101,17 @@ export class ManageBooksComponent {
         isImage: false,
       },
     ];
+  }
+
+  getDataByCategory(id:number){
+    if(id==0){
+      this.loadBooks();
+    }else{
+      this.bookService.getFilter(id).subscribe((data)=>{
+        this.book = data;
+      })
+    }
+    
   }
 
   

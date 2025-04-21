@@ -8,7 +8,16 @@
     <p>hola</p>
   } -->
   <app-form-book></app-form-book>
-  <app-filterbook></app-filterbook>
+  <!-- <app-filterbook></app-filterbook> -->
+   <mat-form-field appearance="fill">
+    <mat-label>Filtrar por Categoria</mat-label>
+    <mat-select (selectionChange)="getDataByCategory($event.value)">
+        <mat-option [value]="0">Todas</mat-option>
+        <mat-option *ngFor="let category of categorys;" [value]="category.id_category">
+            {{ category.name }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
 
 
   <button mat-button routerLink="/manage-books/createcategory">Crear Categoria</button>

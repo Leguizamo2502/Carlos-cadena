@@ -103,8 +103,52 @@ public class bookService {
     }
 
     // Obtener por nombre
-    public List<String> findByNamebook(String name) {
-        return _bookData.findByName(name);
+    // public List<String> findByNamebook(String name) {
+    //     return _bookData.findByName(name);
+    // }
+
+    //Ontern por catregorya
+    public List<responseBookDto> getFilter(int id_category) {
+        List<Object[]> results = _bookData.filterBook(id_category);
+        
+        // Usamos un mapa para combinar resultados por ID de libro
+        Map<Integer, responseBookDto> bookMap = new HashMap<>();
+        
+        for (Object[] result : results) {
+            Integer idBook = ((Number) result[0]).intValue();
+            String title = (String) result[1];
+            String description = (String) result[2];
+            String publisherName = (String) result[3];
+            String authorName = (String) result[4];
+            String categoryName = (String) result[5];
+            
+            // Obtener o crear DTO para este libro
+            responseBookDto dto = bookMap.computeIfAbsent(idBook, id -> {
+                responseBookDto newDto = new responseBookDto();
+                newDto.setId_book(idBook);
+                newDto.setTitle(title);
+                newDto.setDescription(description);
+                newDto.setPublishers(new ArrayList<>());
+                newDto.setAuthors(new ArrayList<>());
+                newDto.setCategories(new ArrayList<>());
+                return newDto;
+            });
+            
+            // Añadir relaciones si no son null y no están ya en las listas
+            if (publisherName != null && !dto.getPublishers().contains(publisherName)) {
+                dto.getPublishers().add(publisherName);
+            }
+            
+            if (authorName != null && !dto.getAuthors().contains(authorName)) {
+                dto.getAuthors().add(authorName);
+            }
+            
+            if (categoryName != null && !dto.getCategories().contains(categoryName)) {
+                dto.getCategories().add(categoryName);
+            }
+        }
+        
+        return new ArrayList<>(bookMap.values());
     }
 
     // Obteber por id

@@ -20,8 +20,8 @@ export class BookService {
 
   private URLfilter = environment.apiUrl+'/api/v1/book/filter';
 
-  public getFilter(name:string):Observable<any>{
-    return this.http.get(`${this.URLfilter}/${name}`);
+  public getFilter(id:number):Observable<any>{
+    return this.http.get(`${this.URLfilter}/${id}`);
   }
 
   private URLnormal = environment.apiUrl+'/api/v1/book/';

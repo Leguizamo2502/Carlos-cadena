@@ -37,12 +37,19 @@ public class bookController {
         return new ResponseEntity<Object>(Listbook, HttpStatus.OK);
     }
 
-    // Obtener por nombre
-    @GetMapping("/filter/{name}")
-    public ResponseEntity<Object> findByNamebook(@PathVariable String name) {
-        var Listbook = _bookService.findByNamebook(name);
-        return new ResponseEntity<>(Listbook, HttpStatus.OK);
+    //Traer por categoria
+    @GetMapping("/filter/{id}")
+    public ResponseEntity<Object> filter(@PathVariable int id) {
+        var Listbook = _bookService.getFilter(id);
+        return new ResponseEntity<Object>(Listbook, HttpStatus.OK);
     }
+
+    // Obtener por nombre
+    // @GetMapping("/filter/{name}")
+    // public ResponseEntity<Object> findByNamebook(@PathVariable String name) {
+    //     var Listbook = _bookService.findByNamebook(name);
+    //     return new ResponseEntity<>(Listbook, HttpStatus.OK);
+    // }
 
     // Obtener por id
     @GetMapping("/{id}")
